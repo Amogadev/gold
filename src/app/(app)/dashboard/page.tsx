@@ -1,66 +1,43 @@
-import Link from "next/link";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { Button } from "@/components/ui/button";
-import { ContentCard } from "@/components/content-card";
-import { RecommendationsForm } from "@/components/recommendations-form";
-import { ArrowRight } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default function DashboardPage() {
-  const exclusiveContent = PlaceHolderImages.filter((img) =>
-    img.id.startsWith("exclusive")
-  ).slice(0, 3);
-  const earlyAccessContent = PlaceHolderImages.filter((img) =>
-    img.id.startsWith("early-access")
-  ).slice(0, 3);
-
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="space-y-12">
-        <header>
-          <h1 className="text-4xl font-bold font-headline text-foreground tracking-tight">
-            Welcome, Golden Member
-          </h1>
-          <p className="mt-2 text-lg text-muted-foreground">
-            Here's your exclusive access to a world of premium features.
-          </p>
-        </header>
-
-        <RecommendationsForm />
-
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold font-headline">
-              Exclusive Content
-            </h2>
-            <Button variant="ghost" asChild>
-              <Link href="/exclusive-content">
-                View All <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+      <Card>
+        <CardHeader>
+          <CardTitle>Active Loan</CardTitle>
+          <CardDescription>
+            Here are the details of your active loan.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Loan Amount</span>
+              <span className="font-medium">$10,000</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Interest Rate</span>
+              <span className="font-medium">5.0%</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Next Payment</span>
+              <span className="font-medium">July 30, 2024</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Status</span>
+              <Badge>Active</Badge>
+            </div>
           </div>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {exclusiveContent.map((item) => (
-              <ContentCard key={item.id} item={item} />
-            ))}
-          </div>
-        </section>
-
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold font-headline">Early Access</h2>
-            <Button variant="ghost" asChild>
-              <Link href="/early-access">
-                View All <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {earlyAccessContent.map((item) => (
-              <ContentCard key={item.id} item={item} />
-            ))}
-          </div>
-        </section>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
