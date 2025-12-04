@@ -16,12 +16,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Gem, LogIn } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { useAuth } from '@/firebase';
+import { auth } from '@/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { auth } = useAuth();
   const [email, setEmail] = useState('admin@gmail.com');
   const [password, setPassword] = useState('admin@123');
   const [error, setError] = useState('');

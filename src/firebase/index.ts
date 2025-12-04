@@ -7,18 +7,12 @@ import { firebaseConfig } from './config';
 import { useUser } from './auth/use-user';
 import { useCollection } from './firestore/use-collection';
 import { useDoc } from './firestore/use-doc';
-import {
-  FirebaseProvider,
-  useFirebaseApp,
-  useAuth,
-  useFirestore,
-} from './provider';
 
 let app: FirebaseApp;
 let auth: Auth;
 let db: Firestore;
 
-function initializeFirebase() {
+if (typeof window !== 'undefined') {
   if (getApps().length === 0) {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
@@ -28,18 +22,13 @@ function initializeFirebase() {
     auth = getAuth(app);
     db = getFirestore(app);
   }
-  return { app, auth, db };
 }
 
-export {
-  initializeFirebase,
-  FirebaseProvider,
-  useUser,
-  useCollection,
-  useDoc,
-  useFirebaseApp,
-  useAuth,
-  useFirestore,
-};
+// These are for use in client components
+export { useUser, useCollection, useDoc };
 
+// These are for use in client components
+export { app, auth, db };
+
+// These are for use in client components
 export type { FirebaseApp, Auth, Firestore };
