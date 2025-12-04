@@ -50,10 +50,6 @@ export default function DashboardPage() {
       streamRef.current = stream;
       setHasCameraPermission(true);
       setIsCameraOpen(true);
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
     } catch (error) {
       console.error('Error accessing camera:', error);
       setHasCameraPermission(false);
@@ -85,6 +81,12 @@ export default function DashboardPage() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (isCameraOpen && videoRef.current && streamRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+    }
+  }, [isCameraOpen]);
 
   return (
     <div className="container mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
@@ -184,21 +186,23 @@ export default function DashboardPage() {
                   </div>
                 </div>
               ) : (
-                <Button type="button" variant="outline" onClick={getCameraPermission} className="w-full md:w-auto">
-                  <Camera className="mr-2" />
-                  Open Camera
-                </Button>
+                <div className="flex flex-col items-start gap-4">
+                  <Button type="button" variant="outline" onClick={getCameraPermission} className="w-full md:w-auto">
+                    <Camera className="mr-2" />
+                    Open Camera
+                  </Button>
+                   {hasCameraPermission === false && (
+                    <Alert variant="destructive">
+                      <AlertTitle>Camera Access Required</AlertTitle>
+                      <AlertDescription>
+                        Please allow camera access in your browser to use this
+                        feature. You might need to refresh the page after
+                        granting permission.
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                </div>
               )}
-               {hasCameraPermission === false && (
-                  <Alert variant="destructive" className="mt-4">
-                    <AlertTitle>Camera Access Required</AlertTitle>
-                    <AlertDescription>
-                      Please allow camera access in your browser to use this
-                      feature. You might need to refresh the page after
-                      granting permission.
-                    </AlertDescription>
-                  </Alert>
-                )}
             </div>
 
             <div className="flex justify-end">
