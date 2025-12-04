@@ -9,10 +9,6 @@ import {
   User,
   LifeBuoy,
 } from "lucide-react";
-import {
-  SidebarMenuItem,
-  SidebarMenuButton,
-} from "@/components/ui/sidebar-custom";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -27,22 +23,18 @@ export function MainNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-col gap-2 p-4">
+    <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
       {navItems.map((item) => (
-        <SidebarMenuItem key={item.href}>
-          <Link href={item.href}>
-            <SidebarMenuButton
-              className={cn(
-                "w-full justify-start",
-                pathname === item.href && "bg-accent text-accent-foreground"
-              )}
-              isActive={pathname === item.href}
-            >
-              <item.icon className="h-5 w-5 mr-3" />
-              {item.label}
-            </SidebarMenuButton>
-          </Link>
-        </SidebarMenuItem>
+        <Link
+          key={item.href}
+          href={item.href}
+          className={cn(
+            "transition-colors hover:text-foreground/80",
+            pathname === item.href ? "text-foreground" : "text-foreground/60"
+          )}
+        >
+          {item.label}
+        </Link>
       ))}
     </nav>
   );
