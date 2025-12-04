@@ -38,18 +38,18 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link href="/profile" passHref>
-            <DropdownMenuItem>
-              <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
+            <DropdownMenuItem asChild>
+              <Link href="/profile">
+                <User className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+              </Link>
             </DropdownMenuItem>
-          </Link>
-          <Link href="/support" passHref>
-            <DropdownMenuItem>
-              <LifeBuoy className="mr-2 h-4 w-4" />
-              <span>Support</span>
+            <DropdownMenuItem asChild>
+              <Link href="/support">
+                <LifeBuoy className="mr-2 h-4 w-4" />
+                <span>Support</span>
+              </Link>
             </DropdownMenuItem>
-          </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>

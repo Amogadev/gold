@@ -29,8 +29,8 @@ export function MainNav() {
   return (
     <nav className="flex flex-col gap-2 p-4">
       {navItems.map((item) => (
-        <Link href={item.href} key={item.href} legacyBehavior passHref>
-          <SidebarMenuItem>
+        <SidebarMenuItem key={item.href}>
+          <Link href={item.href}>
             <SidebarMenuButton
               className={cn(
                 "w-full justify-start",
@@ -41,8 +41,8 @@ export function MainNav() {
               <item.icon className="h-5 w-5 mr-3" />
               {item.label}
             </SidebarMenuButton>
-          </SidebarMenuItem>
-        </Link>
+          </Link>
+        </SidebarMenuItem>
       ))}
     </nav>
   );
