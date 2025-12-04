@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -15,11 +16,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Gem, LogIn } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { auth } from '@/firebase';
+import { useAuth } from '@/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { auth } = useAuth();
   const [email, setEmail] = useState('admin@gmail.com');
   const [password, setPassword] = useState('admin@123');
   const [error, setError] = useState('');
@@ -36,8 +38,8 @@ export default function LoginPage() {
       router.push('/dashboard');
     } catch (error: any) {
       console.error(error);
-      if (error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-api-key') {
-        setError('Invalid email or password.');
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-api-key' || error.code === 'auth/api-key-not-valid.-please-pass-a-valid-api-key.') {
+        setError('Invalid email or password, or API key is not valid.');
       } else {
         setError('An unexpected error occurred. Please try again.');
       }

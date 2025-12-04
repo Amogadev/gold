@@ -1,3 +1,4 @@
+
 'use client';
 
 import { LogOut } from 'lucide-react';
@@ -12,10 +13,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { auth, useUser } from '@/firebase';
+import { useAuth, useUser } from '@/firebase';
 
 export function UserNav() {
   const { user } = useUser();
+  const { auth } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {

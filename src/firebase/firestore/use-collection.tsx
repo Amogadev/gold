@@ -1,7 +1,7 @@
+
 'use client';
 import { useState, useEffect } from 'react';
 import type {
-  Firestore,
   CollectionReference,
   Query,
   DocumentData,
@@ -23,7 +23,7 @@ export const useCollection = (
       setLoading(false);
       return;
     }
-
+    setLoading(true);
     const unsubscribe = onSnapshot(
       query,
       (querySnapshot) => {

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -5,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { firestore } from '@/firebase';
+import { useFirestore } from '@/firebase';
 import { collection, addDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
 
@@ -56,6 +57,7 @@ export default function NewLoanPage() {
 
   const router = useRouter();
   const { toast } = useToast();
+  const { db } = useFirestore();
 
   const {
     register,
@@ -134,7 +136,7 @@ export default function NewLoanPage() {
   };
 
   const onSubmit = async (data: LoanFormData) => {
-    if (!firestore) {
+    if (!db) {
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -164,7 +166,7 @@ export default function NewLoanPage() {
         imageUrl: '',
       };
       
-      const docRef = await addDoc(collection(firestore, 'loans'), loanData);
+      const docRef = await addDoc(collection(db, 'loans'), loanData);
       
       const imageUrl = await uploadImageToStorage(capturedImage, docRef.id);
 
