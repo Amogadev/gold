@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Camera, Upload } from 'lucide-react';
+import { Camera, Upload, DollarSign, List, FileText } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
@@ -88,38 +88,38 @@ export default function DashboardPage() {
 
   return (
     <div className="container mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
-      <Card>
+      <Card className="border-primary/20 shadow-lg">
         <CardHeader>
-          <CardTitle>Active Loan</CardTitle>
+          <CardTitle className="font-headline text-3xl">Active Loan</CardTitle>
           <CardDescription>
             Here are the details of your active loan.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Loan Amount</span>
-              <span className="font-medium">$10,000</span>
+          <div className="grid grid-cols-2 gap-x-8 gap-y-4 md:grid-cols-4">
+            <div className="flex flex-col space-y-1">
+              <span className="text-sm text-muted-foreground">Loan Amount</span>
+              <span className="text-xl font-semibold">$10,000</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Interest Rate</span>
-              <span className="font-medium">5.0%</span>
+            <div className="flex flex-col space-y-1">
+              <span className="text-sm text-muted-foreground">Interest Rate</span>
+              <span className="text-xl font-semibold">5.0%</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Next Payment</span>
-              <span className="font-medium">July 30, 2024</span>
+            <div className="flex flex-col space-y-1">
+              <span className="text-sm text-muted-foreground">Next Payment</span>
+              <span className="text-xl font-semibold">July 30, 2024</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Status</span>
-              <Badge>Active</Badge>
+            <div className="flex flex-col space-y-1">
+              <span className="text-sm text-muted-foreground">Status</span>
+              <Badge className="w-fit">Active</Badge>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle>Apply for a New Loan</CardTitle>
+          <CardTitle  className="font-headline text-3xl">Apply for a New Loan</CardTitle>
           <CardDescription>
             Fill out the form below to apply for a new gold loan.
           </CardDescription>
@@ -129,30 +129,41 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="items">Number of Items</Label>
-                <Input id="items" type="number" placeholder="e.g., 2" />
+                <div className="relative">
+                  <List className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <Input id="items" type="number" placeholder="e.g., 2" className="pl-10" />
+                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="loan-amount">How much loan do you need?</Label>
-                <Input
-                  id="loan-amount"
-                  type="number"
-                  placeholder="e.g., 5000"
-                />
+                <div className="relative">
+                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    id="loan-amount"
+                    type="number"
+                    placeholder="e.g., 5000"
+                    className="pl-10"
+                  />
+                </div>
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="particulars">Particulars</Label>
-              <Textarea
-                id="particulars"
-                placeholder="e.g., 1 gold chain, 1 pair of earrings"
-                rows={3}
-              />
+               <div className="relative">
+                <FileText className="absolute left-3 top-3 text-muted-foreground" />
+                <Textarea
+                  id="particulars"
+                  placeholder="e.g., 1 gold chain, 1 pair of earrings"
+                  rows={3}
+                  className="pl-10"
+                />
+              </div>
             </div>
 
             <div className="space-y-4">
               <Label>Gold Image</Label>
               {isCameraOpen ? (
-                 <div className="w-full rounded-md border bg-muted p-4">
+                 <div className="w-full rounded-lg border-2 border-dashed bg-muted p-4">
                   <div className="aspect-video w-full overflow-hidden rounded-md">
                     <video
                       ref={videoRef}
@@ -163,17 +174,17 @@ export default function DashboardPage() {
                     />
                   </div>
                   <div className="mt-4 flex justify-end gap-2">
-                     <Button type="button" variant="outline">
+                     <Button type="button" className="bg-accent hover:bg-accent/90">
                       <Camera className="mr-2" />
                       Take Picture
                     </Button>
-                    <Button type="button" variant="destructive" onClick={closeCamera}>
-                      Close Camera
+                    <Button type="button" variant="ghost" onClick={closeCamera}>
+                      Close
                     </Button>
                   </div>
                 </div>
               ) : (
-                <Button type="button" variant="outline" onClick={getCameraPermission}>
+                <Button type="button" variant="outline" onClick={getCameraPermission} className="w-full md:w-auto">
                   <Camera className="mr-2" />
                   Open Camera
                 </Button>
@@ -191,7 +202,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex justify-end">
-              <Button type="submit">
+              <Button type="submit" size="lg">
                 <Upload className="mr-2" />
                 Submit Loan Application
               </Button>
