@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useCollection } from '@/firebase';
+import { useCollection, firestore } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import {
   Card,
@@ -20,7 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useFirestore } from '@/firebase';
 
 export type Loan = {
   id: string;
@@ -58,8 +57,7 @@ function LoanCard({ loan }: { loan: Loan }) {
             src={loan.imageUrl || '/placeholder.svg'}
             alt={loan.itemName}
             fill
-            objectFit="cover"
-            className="rounded-md"
+            className="object-cover rounded-md"
           />
         </div>
         <div className="grid grid-cols-2 gap-2 text-sm">
@@ -86,7 +84,6 @@ function LoanCard({ loan }: { loan: Loan }) {
 }
 
 export default function ActiveLoansPage() {
-  const { db: firestore } = useFirestore();
   const { data: loans, loading } = useCollection(
     firestore ? collection(firestore, 'loans') : null
   );

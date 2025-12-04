@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
-import { FirebaseProvider } from '@/firebase/provider';
 
 export const metadata: Metadata = {
   title: 'Gold Loan Management',
@@ -28,10 +27,8 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased">
-        <FirebaseProvider>
-          {children}
-          <Toaster />
-        </FirebaseProvider>
+        {children}
+        <Toaster />
       </body>
     </html>
   );

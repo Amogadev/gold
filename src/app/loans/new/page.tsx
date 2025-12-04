@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useFirestore } from '@/firebase';
+import { firestore } from '@/firebase';
 import { collection, addDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
 
@@ -56,7 +56,6 @@ export default function NewLoanPage() {
 
   const router = useRouter();
   const { toast } = useToast();
-  const { db: firestore } = useFirestore();
 
   const {
     register,

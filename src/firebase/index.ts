@@ -6,34 +6,30 @@ import { firebaseConfig } from './config';
 import { useUser } from './auth/use-user';
 import { useCollection } from './firestore/use-collection';
 import { useDoc } from './firestore/use-doc';
-import { FirebaseProvider, useAuth, useFirestore } from './provider';
 
 let app: FirebaseApp;
 let auth: Auth;
-let db: Firestore;
+let firestore: Firestore;
 
-function initializeFirebase() {
-  if (getApps().length) {
-    app = getApp();
-    auth = getAuth(app);
-    db = getFirestore(app);
-  } else {
+if (typeof window !== 'undefined') {
+  if (getApps().length === 0) {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
-    db = getFirestore(app);
+    firestore = getFirestore(app);
+  } else {
+    app = getApp();
+    auth = getAuth(app);
+    firestore = getFirestore(app);
   }
-  
-  return { app, auth, db };
 }
 
 export {
-  initializeFirebase,
   useUser,
   useCollection,
   useDoc,
-  FirebaseProvider,
-  useAuth,
-  useFirestore,
+  app,
+  auth,
+  firestore
 };
 
 export type { FirebaseApp, Auth, Firestore };
