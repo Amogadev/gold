@@ -2,26 +2,46 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Award, LogIn } from 'lucide-react';
+import { Gem, LogIn } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useAuth } from '@/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { auth } = useAuth();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (username === 'admin' && password === 'admin') {
-      sessionStorage.setItem('isAuthenticated', 'true');
+    setError('');
+    if (!auth) {
+      setError('Auth service is not available.');
+      return;
+    }
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       router.push('/dashboard');
-    } else {
-      setError('Invalid username or password');
+    } catch (error: any) {
+      console.error(error);
+      if (error.code === 'auth/invalid-credential') {
+        setError('Invalid email or password.');
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     }
   };
 
@@ -29,11 +49,15 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
-           <div className="flex justify-center items-center mb-4">
-            <Award className="h-12 w-12 text-primary" />
-           </div>
-          <CardTitle className="text-3xl font-headline">Golden Access</CardTitle>
-          <CardDescription>Enter your credentials to access the dashboard.</CardDescription>
+          <div className="flex justify-center items-center mb-4">
+            <Gem className="h-12 w-12 text-primary" />
+          </div>
+          <CardTitle className="text-3xl font-headline">
+            Gold Loan Management
+          </CardTitle>
+          <CardDescription>
+            Enter your credentials to access the dashboard.
+          </CardDescription>
         </CardHeader>
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-6">
@@ -44,13 +68,13 @@ export default function LoginPage() {
               </Alert>
             )}
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
-                id="username"
-                type="text"
-                placeholder="admin"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                id="email"
+                type="email"
+                placeholder="admin@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
@@ -59,7 +83,7 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
-                placeholder="admin"
+                placeholder="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required

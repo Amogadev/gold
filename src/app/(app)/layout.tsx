@@ -2,22 +2,31 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { SiteHeader } from "@/components/site-header";
+import { SiteHeader } from '@/components/site-header';
+import { useUser } from '@/firebase';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const { user, loading } = useUser();
 
   useEffect(() => {
-    const isAuthenticated = sessionStorage.getItem('isAuthenticated');
-    if (isAuthenticated !== 'true') {
+    if (!loading && !user) {
       router.push('/login');
     }
-  }, [router]);
+  }, [user, loading, router]);
+
+  if (loading || !user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div>Loading...</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="relative min-h-screen bg-background font-body">
+    <div className="relative flex min-h-screen flex-col bg-background">
       <SiteHeader />
-      <main className="p-4 sm:p-6 lg:p-8">{children}</main>
+      <main className="flex-1">{children}</main>
     </div>
   );
 }
