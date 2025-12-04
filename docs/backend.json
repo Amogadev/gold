@@ -1,0 +1,107 @@
+{
+  "entities": {
+    "loan": {
+      "title": "Loan",
+      "description": "Represents a single loan record in the system.",
+      "type": "object",
+      "properties": {
+        "customerName": {
+          "type": "string",
+          "description": "The full name of the customer."
+        },
+        "mobileNumber": {
+          "type": "string",
+          "description": "The customer's mobile phone number."
+        },
+        "itemName": {
+          "type": "string",
+          "description": "The name of the gold item (e.g., ring, chain, bangle)."
+        },
+        "itemWeight": {
+          "type": "number",
+          "description": "The weight of the gold item in grams."
+        },
+        "loanAmount": {
+          "type": "number",
+          "description": "The total amount of the loan taken."
+        },
+        "interestPercentage": {
+          "type": "number",
+          "description": "The interest rate for the loan."
+        },
+        "loanStartDate": {
+          "type": "string",
+          "format": "date",
+          "description": "The date the loan was initiated."
+        },
+        "loanDueDate": {
+          "type": "string",
+          "format": "date",
+          "description": "The date the loan is due."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "The URL of the captured gold item image in Firebase Storage."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Active", "Closed"],
+          "description": "The current status of the loan."
+        },
+        "paidAmount": {
+          "type": "number",
+          "description": "The amount that has been paid towards the loan."
+        },
+        "pendingBalance": {
+          "type": "number",
+          "description": "The remaining balance to be paid."
+        }
+      },
+      "required": [
+        "customerName",
+        "mobileNumber",
+        "itemName",
+        "itemWeight",
+        "loanAmount",
+        "interestPercentage",
+        "loanStartDate",
+        "loanDueDate",
+        "imageUrl",
+        "status"
+      ]
+    },
+    "userProfile": {
+      "title": "User Profile",
+      "description": "Represents a user's profile.",
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "description": "The user's display name."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's email address."
+        }
+      }
+    }
+  },
+  "auth": {
+    "providers": ["password"]
+  },
+  "firestore": {
+    "/loans/{loanId}": {
+      "schema": {
+        "$ref": "#/entities/loan"
+      },
+      "description": "Stores individual loan documents."
+    },
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/userProfile"
+      },
+      "description": "Stores user profile information."
+    }
+  }
+}

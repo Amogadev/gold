@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Award, Star, PaintBrush } from "lucide-react";
+import { Award, Star, Paintbrush } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function ProfilePage() {
@@ -53,7 +53,7 @@ export default function ProfilePage() {
             </div>
             <div className="flex items-start gap-4">
               <div className="p-2 rounded-full bg-primary/10 text-primary">
-                <PaintBrush className="h-6 w-6" />
+                <Paintbrush className="h-6 w-6" />
               </div>
               <div>
                 <h3 className="font-semibold">Profile Customization</h3>
