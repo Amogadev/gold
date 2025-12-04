@@ -26,12 +26,10 @@ export const FirebaseProvider = ({
   const [firebase, setFirebase] = useState<ReturnType<
     typeof initializeFirebase
   > | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const services = initializeFirebase();
     setFirebase(services);
-    setLoading(false);
   }, []);
 
   const value = useMemo(
@@ -39,13 +37,21 @@ export const FirebaseProvider = ({
       firebaseApp: firebase?.app || null,
       auth: firebase?.auth || null,
       db: firebase?.db || null,
-      loading,
+      loading: !firebase,
     }),
-    [firebase, loading]
+    [firebase]
   );
 
   return (
-    <FirebaseContext.Provider value={value}>{children}</FirebaseContext.Provider>
+    <FirebaseContext.Provider value={value}>
+      {value.loading ? (
+        <div className="flex min-h-screen items-center justify-center">
+          Loading Firebase...
+        </div>
+      ) : (
+        children
+      )}
+    </FirebaseContext.Provider>
   );
 };
 

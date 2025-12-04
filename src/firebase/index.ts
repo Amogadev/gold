@@ -1,46 +1,39 @@
-import { initializeApp, getApp, getApps, type FirebaseApp } from 'firebase/app';
+import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
 import { getAuth, type Auth } from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
 import { firebaseConfig } from './config';
 
-import {
-  useFirebaseApp,
-  useAuth,
-  useFirestore,
-  FirebaseProvider,
-} from './provider';
-
 import { useUser } from './auth/use-user';
 import { useCollection } from './firestore/use-collection';
 import { useDoc } from './firestore/use-doc';
+import { FirebaseProvider, useAuth, useFirestore } from './provider';
 
-// A map to store initialized Firebase services to avoid re-initialization.
-const services = new Map();
+let app: FirebaseApp;
+let auth: Auth;
+let db: Firestore;
 
 function initializeFirebase() {
-  if (services.has('firebase')) {
-    return services.get('firebase');
+  if (getApps().length) {
+    app = getApp();
+    auth = getAuth(app);
+    db = getFirestore(app);
+  } else {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
   }
-
-  const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const firebaseServices = { app, auth, db };
   
-  services.set('firebase', firebaseServices);
-  
-  return firebaseServices;
+  return { app, auth, db };
 }
 
 export {
   initializeFirebase,
-  useFirebaseApp,
-  useAuth,
-  useFirestore,
-  FirebaseProvider,
   useUser,
   useCollection,
   useDoc,
+  FirebaseProvider,
+  useAuth,
+  useFirestore,
 };
 
 export type { FirebaseApp, Auth, Firestore };
