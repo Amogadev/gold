@@ -21,45 +21,70 @@ export default function DashboardPage() {
   const [hasCameraPermission, setHasCameraPermission] = useState<
     boolean | undefined
   >(undefined);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    const getCameraPermission = async () => {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        setHasCameraPermission(false);
-        toast({
-          variant: 'destructive',
-          title: 'Camera Not Supported',
-          description:
-            'Your browser does not support camera access. Please try a different browser.',
-        });
-        return;
+  const getCameraPermission = async () => {
+    if (hasCameraPermission) {
+      setIsCameraOpen(true);
+      return;
+    }
+    
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setHasCameraPermission(false);
+      toast({
+        variant: 'destructive',
+        title: 'Camera Not Supported',
+        description:
+          'Your browser does not support camera access. Please try a different browser.',
+      });
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+      });
+      streamRef.current = stream;
+      setHasCameraPermission(true);
+      setIsCameraOpen(true);
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
       }
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      setHasCameraPermission(false);
+      toast({
+        variant: 'destructive',
+        title: 'Camera Access Denied',
+        description:
+          'Please enable camera permissions in your browser settings to use this feature.',
+      });
+    }
+  };
 
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
-        setHasCameraPermission(true);
-
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-      } catch (error) {
-        console.error('Error accessing camera:', error);
-        setHasCameraPermission(false);
-        toast({
-          variant: 'destructive',
-          title: 'Camera Access Denied',
-          description:
-            'Please enable camera permissions in your browser settings to use this feature.',
-        });
+  const closeCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    if(videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    setIsCameraOpen(false);
+  };
+  
+  // Cleanup stream on component unmount
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
       }
     };
-
-    getCameraPermission();
-  }, [toast]);
+  }, []);
 
   return (
     <div className="container mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
@@ -126,17 +151,34 @@ export default function DashboardPage() {
 
             <div className="space-y-4">
               <Label>Gold Image</Label>
-              <div className="w-full rounded-md border bg-muted p-4">
-                <div className="aspect-video w-full overflow-hidden rounded-md">
-                  <video
-                    ref={videoRef}
-                    className="h-full w-full object-cover"
-                    autoPlay
-                    muted
-                    playsInline
-                  />
+              {isCameraOpen ? (
+                 <div className="w-full rounded-md border bg-muted p-4">
+                  <div className="aspect-video w-full overflow-hidden rounded-md">
+                    <video
+                      ref={videoRef}
+                      className="h-full w-full object-cover"
+                      autoPlay
+                      muted
+                      playsInline
+                    />
+                  </div>
+                  <div className="mt-4 flex justify-end gap-2">
+                     <Button type="button" variant="outline">
+                      <Camera className="mr-2" />
+                      Take Picture
+                    </Button>
+                    <Button type="button" variant="destructive" onClick={closeCamera}>
+                      Close Camera
+                    </Button>
+                  </div>
                 </div>
-                {hasCameraPermission === false && (
+              ) : (
+                <Button type="button" variant="outline" onClick={getCameraPermission}>
+                  <Camera className="mr-2" />
+                  Open Camera
+                </Button>
+              )}
+               {hasCameraPermission === false && (
                   <Alert variant="destructive" className="mt-4">
                     <AlertTitle>Camera Access Required</AlertTitle>
                     <AlertDescription>
@@ -146,11 +188,6 @@ export default function DashboardPage() {
                     </AlertDescription>
                   </Alert>
                 )}
-              </div>
-              <Button type="button" variant="outline" disabled={!hasCameraPermission}>
-                <Camera className="mr-2" />
-                Take Picture
-              </Button>
             </div>
 
             <div className="flex justify-end">
