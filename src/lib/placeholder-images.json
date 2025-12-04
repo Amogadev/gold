@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "exclusive-1",
+      "description": "An in-depth guide to mastering new features before anyone else.",
+      "imageUrl": "https://images.unsplash.com/photo-1763070963735-d46fe78442d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxndWlkZSUyMGJvb2t8ZW58MHx8fHwxNzY0ODI4MzQ1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "guide book"
+    },
+    {
+      "id": "exclusive-2",
+      "description": "Watch our exclusive behind-the-scenes documentary.",
+      "imageUrl": "https://images.unsplash.com/photo-1687718691654-87ae233f982f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkb2N1bWVudGFyeSUyMGZpbG18ZW58MHx8fHwxNzY0ODI4MzQ1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "documentary film"
+    },
+    {
+      "id": "exclusive-3",
+      "description": "Listen to an exclusive podcast episode with the founders.",
+      "imageUrl": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwb2RjYXN0JTIwbWljcm9waG9uZXxlbnwwfHx8fDE3NjQ4MjgzNDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "podcast microphone"
+    },
+    {
+      "id": "early-access-1",
+      "description": "Get early access to our next-generation analytics dashboard.",
+      "imageUrl": "https://images.unsplash.com/photo-1748609160056-7b95f30041f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxhbmFseXRpY3MlMjBkYXNoYm9hcmR8ZW58MHx8fHwxNzY0ODI4MzQ1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "analytics dashboard"
+    },
+    {
+      "id": "early-access-2",
+      "description": "Be the first to try our new AI-powered content creation tools.",
+      "imageUrl": "https://images.unsplash.com/photo-1742830575078-6663793d9536?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxyb2JvdCUyMHdyaXRpbmd8ZW58MHx8fHwxNzY0ODI4MzQ1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "robot writing"
+    },
+    {
+      "id": "early-access-3",
+      "description": "Preview the upcoming redesign of the user profile page.",
+      "imageUrl": "https://images.unsplash.com/photo-1522542550221-31fd19575a2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3ZWJzaXRlJTIwZGVzaWdufGVufDB8fHx8MTc2NDc2MTg5OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "website design"
+    }
+  ]
 }
