@@ -57,7 +57,7 @@ function LoanCard({ loan }: { loan: Loan }) {
           <Image
             src={loan.imageUrl || '/placeholder.svg'}
             alt={loan.itemName}
-            layout="fill"
+            fill
             objectFit="cover"
             className="rounded-md"
           />
@@ -95,6 +95,7 @@ export default function ActiveLoansPage() {
 
   const filteredLoans = (loans as Loan[] | null)
     ?.filter((loan) => {
+      if (!loan.customerName || !loan.mobileNumber) return false;
       const term = searchTerm.toLowerCase();
       return (
         loan.customerName.toLowerCase().includes(term) ||

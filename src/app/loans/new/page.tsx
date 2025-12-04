@@ -6,7 +6,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useFirestore } from '@/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
 
 import { Button } from '@/components/ui/button';
@@ -119,8 +119,11 @@ export default function NewLoanPage() {
   };
   
   useEffect(() => {
+    // This effect ensures the camera stream is stopped when the component unmounts.
     return () => {
-      closeCamera();
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+      }
     };
   }, []);
 
@@ -166,7 +169,7 @@ export default function NewLoanPage() {
       
       const imageUrl = await uploadImageToStorage(capturedImage, docRef.id);
 
-      await addDoc(collection(firestore, 'loans'), { ...loanData, imageUrl });
+      await updateDoc(docRef, { imageUrl });
 
       toast({
         title: 'Success',
@@ -189,7 +192,7 @@ export default function NewLoanPage() {
     <div className="container mx-auto px-4 py-8">
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle className="text-2xl">Create New Loan</CardTitle>
+          <CardTitle>Create New Loan</CardTitle>
           <CardDescription>
             Fill in the details below to create a new gold loan record.
           </CardDescription>
