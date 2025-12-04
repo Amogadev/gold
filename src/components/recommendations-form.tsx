@@ -1,8 +1,8 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState, useEffect, useRef } from "react";
+import { useFormStatus } from "react-dom";
 import { getRecommendations, type RecommendationsState } from "@/app/actions";
-import { useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Card,
@@ -45,7 +45,7 @@ function SubmitButton() {
 
 export function RecommendationsForm() {
   const initialState: RecommendationsState = {};
-  const [state, formAction] = useFormState(getRecommendations, initialState);
+  const [state, formAction] = useActionState(getRecommendations, initialState);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
 
