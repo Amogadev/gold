@@ -44,6 +44,10 @@ export const FirebaseProvider = ({
     [firebase, loading]
   );
 
+  if (loading) {
+    return <div>Loading Firebase...</div>;
+  }
+
   return (
     <FirebaseContext.Provider value={value}>{children}</FirebaseContext.Provider>
   );
