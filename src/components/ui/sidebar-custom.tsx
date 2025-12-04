@@ -94,27 +94,30 @@ const sidebarVariants = cva(
 
 export function Sidebar({ className, children }: React.HTMLAttributes<HTMLDivElement>) {
   const { isMobile, isOpen, setIsOpen, isCollapsed } = useSidebar()
-  const Comp = isMobile ? Sheet : "aside"
-  const props = isMobile ? { open: isOpen, onOpenChange: setIsOpen } : {}
+
+  if (isMobile) {
+    return (
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetContent
+          side="left"
+          className={cn("flex flex-col bg-sidebar p-0 text-sidebar-foreground", isMobile ? "w-64" : "hidden")}
+        >
+          {children}
+        </SheetContent>
+      </Sheet>
+    )
+  }
 
   return (
-    <Comp {...props}>
-      <SheetContent
-        side="left"
-        className={cn("flex flex-col bg-sidebar p-0 text-sidebar-foreground", isMobile ? "w-64" : "hidden")}
-      >
-        {children}
-      </SheetContent>
-      <aside
-        className={cn(
-          sidebarVariants({ isMobile, isCollapsed }),
-          "border-r transition-all duration-300 ease-in-out",
-          className
-        )}
-      >
-        {children}
-      </aside>
-    </Comp>
+    <aside
+      className={cn(
+        sidebarVariants({ isMobile, isCollapsed }),
+        "border-r transition-all duration-300 ease-in-out",
+        className
+      )}
+    >
+      {children}
+    </aside>
   )
 }
 
