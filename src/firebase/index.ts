@@ -14,11 +14,22 @@ import { useUser } from './auth/use-user';
 import { useCollection } from './firestore/use-collection';
 import { useDoc } from './firestore/use-doc';
 
+// A map to store initialized Firebase services to avoid re-initialization.
+const services = new Map();
+
 function initializeFirebase() {
+  if (services.has('firebase')) {
+    return services.get('firebase');
+  }
+
   const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-  return { app, auth, db };
+  const firebaseServices = { app, auth, db };
+  
+  services.set('firebase', firebaseServices);
+  
+  return firebaseServices;
 }
 
 export {
