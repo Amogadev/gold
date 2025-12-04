@@ -2,8 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useCollection } from '@/firebase';
-import { db } from '@/firebase';
+import { useCollection, useFirestore } from '@/firebase';
 import { collection } from 'firebase/firestore';
 import {
   Card,
@@ -86,6 +85,7 @@ function LoanCard({ loan }: { loan: Loan }) {
 }
 
 export default function ActiveLoansPage() {
+  const db = useFirestore();
   const { data: loans, loading } = useCollection(
     db ? collection(db, 'loans') : null
   );

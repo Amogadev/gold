@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { db } from '@/firebase';
+import { useFirestore } from '@/firebase';
 import { collection, addDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
 
@@ -48,6 +48,7 @@ const loanSchema = z.object({
 type LoanFormData = z.infer<typeof loanSchema>;
 
 export default function NewLoanPage() {
+  const db = useFirestore();
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | undefined>(undefined);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);

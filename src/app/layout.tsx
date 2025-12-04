@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Alegreya } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
+import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 const alegreya = Alegreya({
   subsets: ['latin'],
@@ -23,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${alegreya.variable} font-sans antialiased`}>
-        {children}
+        <FirebaseClientProvider>{children}</FirebaseClientProvider>
         <Toaster />
       </body>
     </html>

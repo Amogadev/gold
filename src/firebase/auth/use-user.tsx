@@ -3,9 +3,10 @@
 
 import { useEffect, useState } from 'react';
 import type { User } from 'firebase/auth';
-import { auth } from '@/firebase';
+import { useAuth } from '@/firebase';
 
 export function useUser() {
+  const auth = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -21,7 +22,7 @@ export function useUser() {
     });
 
     return () => unsubscribe?.();
-  }, []);
+  }, [auth]);
 
   return { user, loading };
 }
