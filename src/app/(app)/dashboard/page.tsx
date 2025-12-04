@@ -1,15 +1,68 @@
+'use client';
+
+import { useState, useRef, useEffect } from 'react';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Camera, Upload } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 export default function DashboardPage() {
+  const [hasCameraPermission, setHasCameraPermission] = useState<
+    boolean | undefined
+  >(undefined);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const getCameraPermission = async () => {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setHasCameraPermission(false);
+        toast({
+          variant: 'destructive',
+          title: 'Camera Not Supported',
+          description:
+            'Your browser does not support camera access. Please try a different browser.',
+        });
+        return;
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+        setHasCameraPermission(true);
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        setHasCameraPermission(false);
+        toast({
+          variant: 'destructive',
+          title: 'Camera Access Denied',
+          description:
+            'Please enable camera permissions in your browser settings to use this feature.',
+        });
+      }
+    };
+
+    getCameraPermission();
+  }, [toast]);
+
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="container mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
       <Card>
         <CardHeader>
           <CardTitle>Active Loan</CardTitle>
@@ -36,6 +89,77 @@ export default function DashboardPage() {
               <Badge>Active</Badge>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Apply for a New Loan</CardTitle>
+          <CardDescription>
+            Fill out the form below to apply for a new gold loan.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form className="space-y-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="items">Number of Items</Label>
+                <Input id="items" type="number" placeholder="e.g., 2" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="loan-amount">How much loan do you need?</Label>
+                <Input
+                  id="loan-amount"
+                  type="number"
+                  placeholder="e.g., 5000"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="particulars">Particulars</Label>
+              <Textarea
+                id="particulars"
+                placeholder="e.g., 1 gold chain, 1 pair of earrings"
+                rows={3}
+              />
+            </div>
+
+            <div className="space-y-4">
+              <Label>Gold Image</Label>
+              <div className="w-full rounded-md border bg-muted p-4">
+                <div className="aspect-video w-full overflow-hidden rounded-md">
+                  <video
+                    ref={videoRef}
+                    className="h-full w-full object-cover"
+                    autoPlay
+                    muted
+                    playsInline
+                  />
+                </div>
+                {hasCameraPermission === false && (
+                  <Alert variant="destructive" className="mt-4">
+                    <AlertTitle>Camera Access Required</AlertTitle>
+                    <AlertDescription>
+                      Please allow camera access in your browser to use this
+                      feature. You might need to refresh the page after
+                      granting permission.
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </div>
+              <Button type="button" variant="outline" disabled={!hasCameraPermission}>
+                <Camera className="mr-2" />
+                Take Picture
+              </Button>
+            </div>
+
+            <div className="flex justify-end">
+              <Button type="submit">
+                <Upload className="mr-2" />
+                Submit Loan Application
+              </Button>
+            </div>
+          </form>
         </CardContent>
       </Card>
     </div>
