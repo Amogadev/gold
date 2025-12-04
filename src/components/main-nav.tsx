@@ -4,19 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  BookLock,
-  Sparkles,
-  User,
-  LifeBuoy,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/exclusive-content", label: "Exclusive Content", icon: BookLock },
-  { href: "/early-access", label: "Early Access", icon: Sparkles },
-  { href: "/profile", label: "My Profile", icon: User },
-  { href: "/support", label: "Priority Support", icon: LifeBuoy },
 ];
 
 export function MainNav() {
