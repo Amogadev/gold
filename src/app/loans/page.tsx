@@ -143,35 +143,25 @@ function LoanCard({ loan }: { loan: Loan }) {
 }
 
 export default function ActiveLoansPage() {
-  const [loans, setLoans] = useState<Loan[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loans, setLoans] = useState<Loan[]>(mockLoans);
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
 
   useEffect(() => {
     // This function will only be called on the client side
-    const initializeLoans = () => {
-      let allLoans = [...mockLoans];
-      
-      // Check for a new loan in sessionStorage
-      const newLoanJson = sessionStorage.getItem('newLoan');
-      if (newLoanJson) {
-        try {
-          const newLoan = JSON.parse(newLoanJson);
-          // Add the new loan to the beginning of the list
-          allLoans.unshift(newLoan);
-          // Remove the item from sessionStorage to avoid adding it again on refresh
-          sessionStorage.removeItem('newLoan');
-        } catch (error) {
-          console.error("Could not parse new loan from sessionStorage", error);
-        }
+    const newLoanJson = sessionStorage.getItem('newLoan');
+    if (newLoanJson) {
+      try {
+        const newLoan = JSON.parse(newLoanJson);
+        // Add the new loan to the beginning of the list
+        setLoans(prevLoans => [newLoan, ...prevLoans]);
+        // Remove the item from sessionStorage to avoid adding it again on refresh
+        sessionStorage.removeItem('newLoan');
+      } catch (error) {
+        console.error("Could not parse new loan from sessionStorage", error);
       }
-      
-      setLoans(allLoans);
-      setLoading(false);
-    };
-
-    initializeLoans();
+    }
   }, []);
 
   const filteredLoans = loans
@@ -238,6 +228,3 @@ export default function ActiveLoansPage() {
     </div>
   );
 }
-
-    
-    
