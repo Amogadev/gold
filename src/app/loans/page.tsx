@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import {
   Card,
@@ -11,6 +10,17 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import { Input } from '@/components/ui/input';
@@ -22,8 +32,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { FilePenLine } from 'lucide-react';
+import { FilePenLine, Trash2 } from 'lucide-react';
 import { SiteHeader } from '@/components/site-header';
+import { useFirestore } from '@/firebase/provider';
+import { collection, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
+import { useCollection } from '@/firebase/firestore/use-collection';
 
 export type Loan = {
   id: string;
@@ -42,59 +55,15 @@ export type Loan = {
   imageHint?: string;
 };
 
-export const mockLoans: Loan[] = [
-  {
-    id: '1',
-    customerName: 'Alice Johnson',
-    mobileNumber: '123-456-7890',
-    itemName: 'Gold Bangle',
-    itemWeight: 25.5,
-    loanAmount: 1500,
-    interestPercentage: 8.5,
-    loanStartDate: '2023-05-10',
-    loanDueDate: '2024-05-10',
-    imageUrl: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxnb2xkLWhvb2dzfGVufDB8fHx8MTc2NDc2NTQ2OHww&ixlib=rb-4.1.0&q=80&w=1080',
-    status: 'Active',
-    paidAmount: 500,
-    pendingBalance: 1000,
-    imageHint: 'gold bangle'
-  },
-  {
-    id: '2',
-    customerName: 'Bob Williams',
-    mobileNumber: '234-567-8901',
-    itemName: 'Gold Bangle',
-    itemWeight: 5.2,
-    loanAmount: 2200,
-    interestPercentage: 9.0,
-    loanStartDate: '2023-08-20',
-    loanDueDate: '2024-08-20',
-    imageUrl: 'https://images.unsplash.com/photo-1616963248334-a1a8a2d1d0c5?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    status: 'Active',
-    paidAmount: 1000,
-    pendingBalance: 1200,
-    imageHint: 'gold bangle'
-  },
-  {
-    id: '3',
-    customerName: 'Charlie Brown',
-    mobileNumber: '345-678-9012',
-    itemName: 'Gold Chain',
-    itemWeight: 50.0,
-    loanAmount: 3000,
-    interestPercentage: 8.0,
-    loanStartDate: '2022-11-01',
-    loanDueDate: '2023-11-01',
-    imageUrl: 'https://images.unsplash.com/photo-1611893423233-21c6a80b1e4a?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    status: 'Closed',
-    paidAmount: 3000,
-    pendingBalance: 0,
-    imageHint: 'gold chain'
-  },
-];
-
-
 function LoanCard({ loan }: { loan: Loan }) {
+
+  const handleDelete = async () => {
+    const db = useFirestore();
+    if (db) {
+      await deleteDoc(doc(db, 'loans', loan.id));
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -137,41 +106,50 @@ function LoanCard({ loan }: { loan: Loan }) {
           </div>
         </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex gap-2">
         <Button asChild variant="outline" className="w-full">
           <Link href={`/loans/${loan.id}/edit`}>
             <FilePenLine className="mr-2 h-4 w-4" /> Edit
           </Link>
         </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" className="w-full">
+              <Trash2 className="mr-2 h-4 w-4" /> Delete
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the loan
+                for {loan.customerName}.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardFooter>
     </Card>
   );
 }
 
 export default function ActiveLoansPage() {
-  const [loans, setLoans] = useState<Loan[]>(mockLoans);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const db = useFirestore();
 
-  useEffect(() => {
-    // This effect runs only once on the client when the component mounts.
-    try {
-      const newLoanJson = sessionStorage.getItem('newLoan');
-      if (newLoanJson) {
-        const newLoan = JSON.parse(newLoanJson) as Loan;
-        // Prepend the new loan to the existing list of loans
-        setLoans(prevLoans => [newLoan, ...prevLoans]);
-        // Clear the item from sessionStorage to prevent re-adding on refresh
-        sessionStorage.removeItem('newLoan');
-      }
-    } catch (error) {
-      console.error("Could not parse new loan from sessionStorage", error);
-    }
-    setLoading(false);
-  }, []);
+  const loansQuery = useMemo(() => {
+    if (!db) return null;
+    return query(collection(db, 'loans'), orderBy('loanStartDate', 'desc'));
+  }, [db]);
+  
+  const { data: loans, loading } = useCollection(loansQuery);
 
-  const filteredLoans = loans
+  const filteredLoans = (loans as Loan[])
     ?.filter((loan) => {
       if (!loan.customerName || !loan.mobileNumber) return false;
       const term = searchTerm.toLowerCase();

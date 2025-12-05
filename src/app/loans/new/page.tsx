@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -28,9 +27,10 @@ import { Calendar as CalendarIcon, Camera, Upload } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
-import type { Loan } from '@/app/loans/page';
 import { SiteHeader } from '@/components/site-header';
 import { PageHeader } from '@/components/page-header';
+import { useFirestore } from '@/firebase/provider';
+import { addDoc, collection } from 'firebase/firestore';
 
 const loanSchema = z.object({
   customerName: z.string().min(1, 'Customer name is required'),
@@ -58,6 +58,7 @@ export default function NewLoanPage() {
 
   const router = useRouter();
   const { toast } = useToast();
+  const db = useFirestore();
 
   const {
     register,
@@ -140,39 +141,42 @@ export default function NewLoanPage() {
   }, []);
 
   const onSubmit = async (data: LoanFormData) => {
+    if (!db) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Firestore is not initialized.',
+      });
+      return;
+    }
     setLoading(true);
-    // Simulate an API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    const newLoan: Loan = {
-      id: new Date().toISOString(),
-      customerName: data.customerName,
-      mobileNumber: data.mobileNumber,
-      itemName: data.itemName,
-      itemWeight: data.itemWeight,
-      loanAmount: data.loanAmount,
-      interestPercentage: data.interestPercentage,
-      loanStartDate: format(data.loanStartDate, 'yyyy-MM-dd'),
-      loanDueDate: format(data.loanDueDate, 'yyyy-MM-dd'),
-      imageUrl: capturedImage || 'https://picsum.photos/seed/placeholder/600/400',
-      status: 'Active',
-      paidAmount: 0,
-      pendingBalance: data.loanAmount,
-    };
 
     try {
-      // Store the new loan in sessionStorage to pass it to the loans list page
-      sessionStorage.setItem('newLoan', JSON.stringify(newLoan));
+      await addDoc(collection(db, 'loans'), {
+        ...data,
+        loanStartDate: format(data.loanStartDate, 'yyyy-MM-dd'),
+        loanDueDate: format(data.loanDueDate, 'yyyy-MM-dd'),
+        imageUrl: capturedImage || `https://picsum.photos/seed/${new Date().getTime()}/600/400`,
+        status: 'Active',
+        paidAmount: 0,
+        pendingBalance: data.loanAmount,
+      });
+
+      toast({
+        title: 'Success!',
+        description: 'New loan has been created successfully.',
+      });
+      router.push('/loans');
     } catch (error) {
-      console.error("Could not save new loan to sessionStorage", error);
+      console.error("Error adding document: ", error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Could not create the loan. Please try again.',
+      });
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
-    toast({
-      title: 'Success!',
-      description: 'New loan has been created successfully.',
-    });
-    router.push('/loans');
   };
 
   return (
@@ -312,9 +316,6 @@ export default function NewLoanPage() {
                               selected={field.value}
                               onSelect={field.onChange}
                               initialFocus
-                              captionLayout="dropdown-buttons"
-                              fromYear={2015}
-                              toYear={2030}
                             />
                           </PopoverContent>
                         </Popover>
@@ -355,9 +356,6 @@ export default function NewLoanPage() {
                               selected={field.value}
                               onSelect={field.onChange}
                               initialFocus
-                              captionLayout="dropdown-buttons"
-                              fromYear={2015}
-                              toYear={2030}
                             />
                           </PopoverContent>
                         </Popover>
@@ -455,7 +453,3 @@ export default function NewLoanPage() {
     </div>
   );
 }
-
-    
-
-    

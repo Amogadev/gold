@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -28,10 +27,12 @@ import { Calendar as CalendarIcon, Camera, Upload } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
-import type { Loan } from '@/app/loans/page';
-import { mockLoans } from '@/app/loans/page';
 import { SiteHeader } from '@/components/site-header';
 import { PageHeader } from '@/components/page-header';
+import { useFirestore } from '@/firebase/provider';
+import { doc, updateDoc } from 'firebase/firestore';
+import { useDoc } from '@/firebase/firestore/use-doc';
+import type { Loan } from '@/app/loans/page';
 
 const loanSchema = z.object({
   customerName: z.string().min(1, 'Customer name is required'),
@@ -49,7 +50,6 @@ const loanSchema = z.object({
 type LoanFormData = z.infer<typeof loanSchema>;
 
 export default function EditLoanPage({ params }: { params: { id: string } }) {
-  const [loan, setLoan] = useState<Loan | null>(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | undefined>(undefined);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -60,6 +60,14 @@ export default function EditLoanPage({ params }: { params: { id: string } }) {
 
   const router = useRouter();
   const { toast } = useToast();
+  const db = useFirestore();
+
+  const loanRef = useMemo(() => {
+    if (!db || !params.id) return null;
+    return doc(db, 'loans', params.id);
+  }, [db, params.id]);
+
+  const { data: loan, loading: loanLoading } = useDoc(loanRef);
   
   const {
     register,
@@ -72,27 +80,16 @@ export default function EditLoanPage({ params }: { params: { id: string } }) {
   });
 
   useEffect(() => {
-    const loanId = params.id;
-    if (typeof loanId === 'string') {
-      const foundLoan = mockLoans.find(l => l.id === loanId);
-      if (foundLoan) {
-        setLoan(foundLoan);
-        setCapturedImage(foundLoan.imageUrl);
-        reset({
-          ...foundLoan,
-          loanStartDate: parseISO(foundLoan.loanStartDate),
-          loanDueDate: parseISO(foundLoan.loanDueDate),
-        });
-      } else {
-        toast({
-          variant: 'destructive',
-          title: 'Loan not found',
-          description: 'The requested loan could not be found.',
-        });
-        router.push('/loans');
-      }
+    if (loan) {
+      const loanData = loan as Loan;
+      setCapturedImage(loanData.imageUrl);
+      reset({
+        ...loanData,
+        loanStartDate: parseISO(loanData.loanStartDate),
+        loanDueDate: parseISO(loanData.loanDueDate),
+      });
     }
-  }, [params.id, reset, router, toast]);
+  }, [loan, reset]);
   
   const getCameraPermission = async () => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -165,32 +162,50 @@ export default function EditLoanPage({ params }: { params: { id: string } }) {
   }, []);
 
   const onSubmit = async (data: LoanFormData) => {
+    if (!loanRef) return;
     setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
 
-    console.log('Form Submitted Data for update:', {
-      id: loan?.id,
-      ...data,
-      loanStartDate: format(data.loanStartDate, 'yyyy-MM-dd'),
-      loanDueDate: format(data.loanDueDate, 'yyyy-MM-dd'),
-      imageUrl: capturedImage,
-    });
-    
-    setLoading(false);
-    toast({
-      title: 'Success (Simulation)',
-      description: 'Loan has been updated successfully.',
-    });
-    router.push('/loans');
+    try {
+      await updateDoc(loanRef, {
+        ...data,
+        loanStartDate: format(data.loanStartDate, 'yyyy-MM-dd'),
+        loanDueDate: format(data.loanDueDate, 'yyyy-MM-dd'),
+        imageUrl: capturedImage,
+      });
+
+      toast({
+        title: 'Success',
+        description: 'Loan has been updated successfully.',
+      });
+      router.push('/loans');
+    } catch (error) {
+      console.error("Error updating document: ", error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Could not update the loan. Please try again.',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (!loan) {
+  if (loanLoading) {
     return (
       <div className="container mx-auto flex items-center justify-center py-8">
         <p>Loading loan details...</p>
       </div>
     );
   }
+  
+  if (!loan) {
+    return (
+      <div className="container mx-auto flex items-center justify-center py-8">
+         <p>Loan not found.</p>
+      </div>
+    );
+  }
+
 
   return (
     <div className="relative flex min-h-screen flex-col bg-background">
@@ -201,7 +216,7 @@ export default function EditLoanPage({ params }: { params: { id: string } }) {
             <CardHeader>
                <PageHeader 
                 title="Edit Loan" 
-                description={`Update the details for the loan to ${loan.customerName}.`}
+                description={`Update the details for the loan to ${(loan as Loan).customerName}.`}
               />
             </CardHeader>
             <CardContent>
@@ -466,7 +481,3 @@ export default function EditLoanPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
-
-    
-
-    
