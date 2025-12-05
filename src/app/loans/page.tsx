@@ -38,6 +38,7 @@ export type Loan = {
   status: 'Active' | 'Closed';
   paidAmount: number;
   pendingBalance: number;
+  imageHint?: string;
 };
 
 export const mockLoans: Loan[] = [
@@ -51,10 +52,11 @@ export const mockLoans: Loan[] = [
     interestPercentage: 8.5,
     loanStartDate: '2023-05-10',
     loanDueDate: '2024-05-10',
-    imageUrl: 'https://picsum.photos/seed/loan1/600/400',
+    imageUrl: 'https://images.unsplash.com/photo-1611601375333-1598eff394c8?q=80&w=2070&auto=format&fit=crop',
     status: 'Active',
     paidAmount: 500,
     pendingBalance: 1000,
+    imageHint: 'gold bangle'
   },
   {
     id: '2',
@@ -66,10 +68,11 @@ export const mockLoans: Loan[] = [
     interestPercentage: 9.0,
     loanStartDate: '2023-08-20',
     loanDueDate: '2024-08-20',
-    imageUrl: 'https://picsum.photos/seed/loan2/600/400',
+    imageUrl: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=2070&auto=format&fit=crop',
     status: 'Active',
     paidAmount: 1000,
     pendingBalance: 1200,
+    imageHint: 'diamond ring'
   },
   {
     id: '3',
@@ -81,10 +84,11 @@ export const mockLoans: Loan[] = [
     interestPercentage: 8.0,
     loanStartDate: '2022-11-01',
     loanDueDate: '2023-11-01',
-    imageUrl: 'https://picsum.photos/seed/loan3/600/400',
+    imageUrl: 'https://images.unsplash.com/photo-1620952540593-d25a690d96a6?q=80&w=1964&auto=format&fit=crop',
     status: 'Closed',
     paidAmount: 3000,
     pendingBalance: 0,
+    imageHint: 'gold chain'
   },
 ];
 
@@ -110,6 +114,7 @@ function LoanCard({ loan }: { loan: Loan }) {
             alt={loan.itemName}
             fill
             className="object-cover rounded-md"
+            data-ai-hint={loan.imageHint}
           />
         </div>
         <div className="grid grid-cols-2 gap-2 text-sm">
@@ -143,25 +148,29 @@ function LoanCard({ loan }: { loan: Loan }) {
 }
 
 export default function ActiveLoansPage() {
-  const [loans, setLoans] = useState<Loan[]>(mockLoans);
-  const [loading, setLoading] = useState(false);
+  const [loans, setLoans] = useState<Loan[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
 
   useEffect(() => {
-    // This function will only be called on the client side
+    // This effect runs only on the client
     const newLoanJson = sessionStorage.getItem('newLoan');
+    let allLoans = [...mockLoans];
+
     if (newLoanJson) {
       try {
         const newLoan = JSON.parse(newLoanJson);
-        // Add the new loan to the beginning of the list
-        setLoans(prevLoans => [newLoan, ...prevLoans]);
-        // Remove the item from sessionStorage to avoid adding it again on refresh
+        // Prepend the new loan to the existing list
+        allLoans = [newLoan, ...allLoans];
         sessionStorage.removeItem('newLoan');
       } catch (error) {
         console.error("Could not parse new loan from sessionStorage", error);
       }
     }
+    
+    setLoans(allLoans);
+    setLoading(false);
   }, []);
 
   const filteredLoans = loans
@@ -228,5 +237,3 @@ export default function ActiveLoansPage() {
     </div>
   );
 }
-
-    
