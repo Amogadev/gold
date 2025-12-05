@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { initializeApp, type FirebaseApp } from 'firebase/app';
+import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getAuth, type Auth, connectAuthEmulator } from 'firebase/auth';
 import { getFirestore, type Firestore, connectFirestoreEmulator } from 'firebase/firestore';
 
@@ -26,7 +26,13 @@ export function FirebaseClientProvider({
   const [firebase, setFirebase] = useState<FirebaseInstances | null>(null);
 
   useEffect(() => {
-    const app = initializeApp(firebaseConfig);
+    let app: FirebaseApp;
+    if (!getApps().length) {
+        app = initializeApp(firebaseConfig);
+    } else {
+        app = getApps()[0];
+    }
+    
     const auth = getAuth(app);
     const db = getFirestore(app);
 
@@ -34,8 +40,16 @@ export function FirebaseClientProvider({
         // Must be the same port as specified in firebase.json
         const host = process.env.NEXT_PUBLIC_EMULATOR_HOST;
         console.log(`Connecting to Firebase emulators at ${host}`);
-        connectAuthEmulator(auth, `http://${host}:9099`, { disableWarnings: true });
-        connectFirestoreEmulator(db, host, 8080);
+        try {
+            connectAuthEmulator(auth, `http://${host}:9099`, { disableWarnings: true });
+        } catch (e) {
+            console.warn('Auth emulator already connected or error:', e);
+        }
+        try {
+            connectFirestoreEmulator(db, host, 8080);
+        } catch (e) {
+            console.warn('Firestore emulator already connected or error:', e);
+        }
     } else {
         console.log('Connecting to production Firebase services');
     }

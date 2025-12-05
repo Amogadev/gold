@@ -13,25 +13,32 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
-const mockUser = {
-  displayName: 'Demo User',
-  email: 'demo@example.com',
-  photoURL: '',
-};
-
+import { useAuth } from '@/firebase/provider';
+import { useUser } from '@/firebase/auth/use-user';
+import { signOut } from 'firebase/auth';
 
 export function UserNav() {
   const router = useRouter();
+  const auth = useAuth();
+  const { user, loading } = useUser();
 
   const handleLogout = async () => {
-    // In a real app, you'd sign out here.
-    // For the demo, we'll just redirect to the login page.
-    console.log("User logged out.");
-    router.push('/login');
+    try {
+      await signOut(auth);
+      router.push('/login');
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
   };
 
-  const user = mockUser;
+  if (loading) {
+    return null; // or a loading skeleton
+  }
+
+  if (!user) {
+     return null;
+  }
+
 
   return (
     <DropdownMenu>
@@ -47,7 +54,7 @@ export function UserNav() {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
-              {user.displayName}
+              {user.displayName || 'User'}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}

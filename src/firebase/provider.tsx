@@ -25,16 +25,18 @@ export const FirebaseProvider = ({
   auth: Auth;
   db: Firestore;
 }) => {
-  if (!firebaseApp || !auth || !db) {
+  const value = { firebaseApp, auth, db };
+
+  if (!value.firebaseApp || !value.auth || !value.db) {
     return (
        <div className="flex min-h-screen items-center justify-center">
-        <div>Loading...</div>
+        <div>Loading Firebase...</div>
       </div>
     )
   }
 
   return (
-    <FirebaseContext.Provider value={{ firebaseApp, auth, db }}>
+    <FirebaseContext.Provider value={value}>
       {children}
     </FirebaseContext.Provider>
   );

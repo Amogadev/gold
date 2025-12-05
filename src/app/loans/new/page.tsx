@@ -158,7 +158,7 @@ export default function NewLoanPage() {
         loanStartDate: format(data.loanStartDate, 'yyyy-MM-dd'),
         loanDueDate: format(data.loanDueDate, 'yyyy-MM-dd'),
         imageUrl: capturedImage || 'https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnb2xkJTIwcmluZ3xlbnwwfHx8fDE3NjQ5MzMwMDB8MA&ixlib=rb-4.1.0&q=80&w=1080',
-        imageHint: 'gold ring',
+        imageHint: 'gold jewelry',
         status: 'Active',
         paidAmount: 0,
         pendingBalance: data.loanAmount,
@@ -445,7 +445,7 @@ export default function NewLoanPage() {
                 </div>
 
                 <Button type="submit" disabled={loading} className="w-full">
-                  {loading ? 'Saving...' : 'Save Loan'}
+                  {loading ? 'Saving User...' : 'Save the user'}
                 </Button>
               </form>
             </CardContent>
@@ -454,6 +454,6 @@ export default function NewLoanPage() {
       </main>
     </div>
   );
+}
 
-    
     
