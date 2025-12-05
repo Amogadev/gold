@@ -84,7 +84,7 @@ export const mockLoans: Loan[] = [
     interestPercentage: 8.0,
     loanStartDate: '2022-11-01',
     loanDueDate: '2023-11-01',
-    imageUrl: 'https://images.unsplash.com/photo-1620952540593-d25a690d96a6?q=80&w=1964&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1659708701940-e60893ef03d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxnb2xkJTIwY2hhaW58ZW58MHx8fHwxNzY0OTE5Mzg4fDA&ixlib=rb-4.1.0&q=80&w=1080',
     status: 'Closed',
     paidAmount: 3000,
     pendingBalance: 0,
