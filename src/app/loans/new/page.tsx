@@ -29,6 +29,7 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import type { Loan } from '@/app/loans/page';
+import { SiteHeader } from '@/components/site-header';
 
 const loanSchema = z.object({
   customerName: z.string().min(1, 'Customer name is required'),
@@ -162,267 +163,272 @@ export default function NewLoanPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="max-w-2xl mx-auto">
-        <CardHeader>
-          <CardTitle>Create New Loan</CardTitle>
-          <CardDescription>
-            Fill in the details below to create a new gold loan record.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="customerName">Customer Name</Label>
-                <Input
-                  id="customerName"
-                  {...register('customerName')}
-                  placeholder="John Doe"
-                />
-                {errors.customerName && (
-                  <p className="text-sm text-destructive">
-                    {errors.customerName.message}
-                  </p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="mobileNumber">Mobile Number</Label>
-                <Input
-                  id="mobileNumber"
-                  type="tel"
-                  {...register('mobileNumber')}
-                  placeholder="9876543210"
-                />
-                {errors.mobileNumber && (
-                  <p className="text-sm text-destructive">
-                    {errors.mobileNumber.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="itemName">Gold Item Name</Label>
-                <Input
-                  id="itemName"
-                  {...register('itemName')}
-                  placeholder="e.g., Bangle, Ring"
-                />
-                {errors.itemName && (
-                  <p className="text-sm text-destructive">
-                    {errors.itemName.message}
-                  </p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="itemWeight">Gold Weight (grams)</Label>
-                <Input
-                  id="itemWeight"
-                  type="number"
-                  step="0.01"
-                  {...register('itemWeight')}
-                  placeholder="e.g., 10.5"
-                />
-                {errors.itemWeight && (
-                  <p className="text-sm text-destructive">
-                    {errors.itemWeight.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="loanAmount">Loan Amount ($)</Label>
-                <Input
-                  id="loanAmount"
-                  type="number"
-                  {...register('loanAmount')}
-                  placeholder="e.g., 50000"
-                />
-                {errors.loanAmount && (
-                  <p className="text-sm text-destructive">
-                    {errors.loanAmount.message}
-                  </p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="interestPercentage">Interest Rate (%)</Label>
-                <Input
-                  id="interestPercentage"
-                  type="number"
-                  step="0.1"
-                  {...register('interestPercentage')}
-                  placeholder="e.g., 12.5"
-                />
-                {errors.interestPercentage && (
-                  <p className="text-sm text-destructive">
-                    {errors.interestPercentage.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Loan Start Date</Label>
-                <Controller
-                  name="loanStartDate"
-                  control={control}
-                  render={({ field }) => (
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={'outline'}
-                          className={cn(
-                            'w-full justify-start text-left font-normal',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value ? (
-                            format(field.value, 'PPP')
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          initialFocus
-                          captionLayout="dropdown-buttons"
-                          fromYear={2015}
-                          toYear={2030}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  )}
-                />
-                {errors.loanStartDate && (
-                  <p className="text-sm text-destructive">
-                    {errors.loanStartDate.message}
-                  </p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label>Loan Due Date</Label>
-                <Controller
-                  name="loanDueDate"
-                  control={control}
-                  render={({ field }) => (
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={'outline'}
-                          className={cn(
-                            'w-full justify-start text-left font-normal',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value ? (
-                            format(field.value, 'PPP')
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          initialFocus
-                          captionLayout="dropdown-buttons"
-                          fromYear={2015}
-                          toYear={2030}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  )}
-                />
-                {errors.loanDueDate && (
-                  <p className="text-sm text-destructive">
-                    {errors.loanDueDate.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Gold Item Image (Optional)</Label>
-              <div className="w-full rounded-lg border bg-muted p-4" hidden={!capturedImage && !isCameraOpen}>
-                  <video
-                    ref={videoRef}
-                    className="w-full aspect-video rounded-md"
-                    autoPlay
-                    muted
-                    hidden={!isCameraOpen}
-                  />
-                  <div className="mt-4 flex justify-end gap-2" hidden={!isCameraOpen}>
-                    <Button type="button" onClick={takePicture}>
-                      <Camera className="mr-2 h-4 w-4" />
-                      Take Picture
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={closeCamera}
-                    >
-                      Close
-                    </Button>
+    <div className="relative flex min-h-screen flex-col bg-background">
+      <SiteHeader />
+      <main className="flex-1">
+        <div className="container mx-auto px-4 py-8">
+          <Card className="max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle>Create New Loan</CardTitle>
+              <CardDescription>
+                Fill in the details below to create a new gold loan record.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="customerName">Customer Name</Label>
+                    <Input
+                      id="customerName"
+                      {...register('customerName')}
+                      placeholder="John Doe"
+                    />
+                    {errors.customerName && (
+                      <p className="text-sm text-destructive">
+                        {errors.customerName.message}
+                      </p>
+                    )}
                   </div>
-              </div>
-
-              {capturedImage && (
-                <div className="relative">
-                  <img
-                    src={capturedImage}
-                    alt="Captured gold item"
-                    className="w-full rounded-md border"
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="absolute top-2 right-2"
-                    onClick={() => {
-                        setCapturedImage(null);
-                        getCameraPermission();
-                    }}
-                  >
-                    Retake
-                  </Button>
+                  <div className="space-y-2">
+                    <Label htmlFor="mobileNumber">Mobile Number</Label>
+                    <Input
+                      id="mobileNumber"
+                      type="tel"
+                      {...register('mobileNumber')}
+                      placeholder="9876543210"
+                    />
+                    {errors.mobileNumber && (
+                      <p className="text-sm text-destructive">
+                        {errors.mobileNumber.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              )}
-              
-              {!capturedImage && !isCameraOpen && (
-                <div className="flex flex-col items-start gap-4">
-                  <Button type="button" variant="outline" onClick={getCameraPermission}>
-                    <Camera className="mr-2 h-4 w-4" /> Open Camera
-                  </Button>
-                  {hasCameraPermission === false && (
-                    <Alert variant="destructive">
-                      <AlertTitle>Camera Access Required</AlertTitle>
-                      <AlertDescription>
-                        Please allow camera access to use this feature.
-                      </AlertDescription>
-                    </Alert>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="itemName">Gold Item Name</Label>
+                    <Input
+                      id="itemName"
+                      {...register('itemName')}
+                      placeholder="e.g., Bangle, Ring"
+                    />
+                    {errors.itemName && (
+                      <p className="text-sm text-destructive">
+                        {errors.itemName.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="itemWeight">Gold Weight (grams)</Label>
+                    <Input
+                      id="itemWeight"
+                      type="number"
+                      step="0.01"
+                      {...register('itemWeight')}
+                      placeholder="e.g., 10.5"
+                    />
+                    {errors.itemWeight && (
+                      <p className="text-sm text-destructive">
+                        {errors.itemWeight.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="loanAmount">Loan Amount ($)</Label>
+                    <Input
+                      id="loanAmount"
+                      type="number"
+                      {...register('loanAmount')}
+                      placeholder="e.g., 50000"
+                    />
+                    {errors.loanAmount && (
+                      <p className="text-sm text-destructive">
+                        {errors.loanAmount.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="interestPercentage">Interest Rate (%)</Label>
+                    <Input
+                      id="interestPercentage"
+                      type="number"
+                      step="0.1"
+                      {...register('interestPercentage')}
+                      placeholder="e.g., 12.5"
+                    />
+                    {errors.interestPercentage && (
+                      <p className="text-sm text-destructive">
+                        {errors.interestPercentage.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Loan Start Date</Label>
+                    <Controller
+                      name="loanStartDate"
+                      control={control}
+                      render={({ field }) => (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={'outline'}
+                              className={cn(
+                                'w-full justify-start text-left font-normal',
+                                !field.value && 'text-muted-foreground'
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {field.value ? (
+                                format(field.value, 'PPP')
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              initialFocus
+                              captionLayout="dropdown-buttons"
+                              fromYear={2015}
+                              toYear={2030}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                    />
+                    {errors.loanStartDate && (
+                      <p className="text-sm text-destructive">
+                        {errors.loanStartDate.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Loan Due Date</Label>
+                    <Controller
+                      name="loanDueDate"
+                      control={control}
+                      render={({ field }) => (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={'outline'}
+                              className={cn(
+                                'w-full justify-start text-left font-normal',
+                                !field.value && 'text-muted-foreground'
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {field.value ? (
+                                format(field.value, 'PPP')
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              initialFocus
+                              captionLayout="dropdown-buttons"
+                              fromYear={2015}
+                              toYear={2030}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                    />
+                    {errors.loanDueDate && (
+                      <p className="text-sm text-destructive">
+                        {errors.loanDueDate.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Gold Item Image (Optional)</Label>
+                  <div className="w-full rounded-lg border bg-muted p-4" hidden={!capturedImage && !isCameraOpen}>
+                      <video
+                        ref={videoRef}
+                        className="w-full aspect-video rounded-md"
+                        autoPlay
+                        muted
+                        hidden={!isCameraOpen}
+                      />
+                      <div className="mt-4 flex justify-end gap-2" hidden={!isCameraOpen}>
+                        <Button type="button" onClick={takePicture}>
+                          <Camera className="mr-2 h-4 w-4" />
+                          Take Picture
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          onClick={closeCamera}
+                        >
+                          Close
+                        </Button>
+                      </div>
+                  </div>
+
+                  {capturedImage && (
+                    <div className="relative">
+                      <img
+                        src={capturedImage}
+                        alt="Captured gold item"
+                        className="w-full rounded-md border"
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                        onClick={() => {
+                            setCapturedImage(null);
+                            getCameraPermission();
+                        }}
+                      >
+                        Retake
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {!capturedImage && !isCameraOpen && (
+                    <div className="flex flex-col items-start gap-4">
+                      <Button type="button" variant="outline" onClick={getCameraPermission}>
+                        <Camera className="mr-2 h-4 w-4" /> Open Camera
+                      </Button>
+                      {hasCameraPermission === false && (
+                        <Alert variant="destructive">
+                          <AlertTitle>Camera Access Required</AlertTitle>
+                          <AlertDescription>
+                            Please allow camera access to use this feature.
+                          </AlertDescription>
+                        </Alert>
+                      )}
+                    </div>
                   )}
                 </div>
-              )}
-            </div>
 
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading ? 'Saving...' : 'Save Loan'}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+                <Button type="submit" disabled={loading} className="w-full">
+                  {loading ? 'Saving...' : 'Save Loan'}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
     </div>
   );
 }
