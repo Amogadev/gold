@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -117,7 +118,7 @@ function LoanCard({ loan }: { loan: Loan }) {
             <p className="font-medium">{loan.itemName}</p>
           </div>
           <div>
-            <p className="text-muted-foreground">Weight</p>
+            <p className="text-muted-foreground">Gold Weight</p>
             <p className="font-medium">{loan.itemWeight}g</p>
           </div>
           <div>
