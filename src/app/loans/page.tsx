@@ -152,16 +152,16 @@ export default function ActiveLoansPage() {
     // Simulate fetching data
     setTimeout(() => {
       let allLoans = [...mockLoans];
+      
+      // Check for a new loan in sessionStorage
       const newLoanJson = sessionStorage.getItem('newLoan');
-
       if (newLoanJson) {
         try {
           const newLoan = JSON.parse(newLoanJson);
-          // Check if the loan is not already in the list to avoid duplicates on fast refresh
-          if (!allLoans.some(loan => loan.id === newLoan.id)) {
-            allLoans = [newLoan, ...allLoans];
-          }
-          sessionStorage.removeItem('newLoan'); // Clean up after adding
+          // Add the new loan to the beginning of the list
+          allLoans.unshift(newLoan);
+          // Remove the item from sessionStorage to avoid adding it again on refresh
+          sessionStorage.removeItem('newLoan');
         } catch (error) {
           console.error("Could not parse new loan from sessionStorage", error);
         }
@@ -236,3 +236,5 @@ export default function ActiveLoansPage() {
     </div>
   );
 }
+
+    

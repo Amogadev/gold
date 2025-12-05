@@ -28,6 +28,7 @@ import { Calendar as CalendarIcon, Camera } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import type { Loan } from '@/app/loans/page';
 
 const loanSchema = z.object({
   customerName: z.string().min(1, 'Customer name is required'),
@@ -138,9 +139,14 @@ export default function NewLoanPage() {
     // Simulate an API call
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    const newLoan = {
+    const newLoan: Loan = {
       id: new Date().toISOString(),
-      ...data,
+      customerName: data.customerName,
+      mobileNumber: data.mobileNumber,
+      itemName: data.itemName,
+      itemWeight: data.itemWeight,
+      loanAmount: data.loanAmount,
+      interestPercentage: data.interestPercentage,
       loanStartDate: format(data.loanStartDate, 'yyyy-MM-dd'),
       loanDueDate: format(data.loanDueDate, 'yyyy-MM-dd'),
       imageUrl: capturedImage,
@@ -150,9 +156,10 @@ export default function NewLoanPage() {
     };
 
     try {
+      // Store the new loan in sessionStorage to pass it to the loans list page
       sessionStorage.setItem('newLoan', JSON.stringify(newLoan));
     } catch (error) {
-      console.error("Could not save to sessionStorage", error);
+      console.error("Could not save new loan to sessionStorage", error);
     }
     
     setLoading(false);
@@ -297,6 +304,9 @@ export default function NewLoanPage() {
                           selected={field.value}
                           onSelect={field.onChange}
                           initialFocus
+                          captionLayout="dropdown-buttons"
+                          fromYear={2015}
+                          toYear={2030}
                         />
                       </PopoverContent>
                     </Popover>
@@ -337,6 +347,9 @@ export default function NewLoanPage() {
                           selected={field.value}
                           onSelect={field.onChange}
                           initialFocus
+                          captionLayout="dropdown-buttons"
+                          fromYear={2015}
+                          toYear={2030}
                         />
                       </PopoverContent>
                     </Popover>
@@ -416,3 +429,5 @@ export default function NewLoanPage() {
     </div>
   );
 }
+
+    
