@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Calendar as CalendarIcon, Camera } from 'lucide-react';
+import { Calendar as CalendarIcon, Camera, Upload } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
@@ -54,6 +54,7 @@ export default function NewLoanPage() {
   const [loading, setLoading] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const router = useRouter();
   const { toast } = useToast();
@@ -93,6 +94,17 @@ export default function NewLoanPage() {
         title: 'Camera Access Denied',
         description: 'Please enable camera permissions in your browser settings.',
       });
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setCapturedImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -397,19 +409,30 @@ export default function NewLoanPage() {
                         className="absolute top-2 right-2"
                         onClick={() => {
                             setCapturedImage(null);
-                            getCameraPermission();
                         }}
                       >
-                        Retake
+                        Remove
                       </Button>
                     </div>
                   )}
                   
                   {!capturedImage && !isCameraOpen && (
                     <div className="flex flex-col items-start gap-4">
-                      <Button type="button" variant="outline" onClick={getCameraPermission}>
-                        <Camera className="mr-2 h-4 w-4" /> Open Camera
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button type="button" variant="outline" onClick={getCameraPermission}>
+                          <Camera className="mr-2 h-4 w-4" /> Open Camera
+                        </Button>
+                        <Button type="button" variant="outline" onClick={() => fileInputRef.current?.click()}>
+                          <Upload className="mr-2 h-4 w-4" /> Upload Picture
+                        </Button>
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          onChange={handleFileChange}
+                          className="hidden"
+                          accept="image/*"
+                        />
+                      </div>
                       {hasCameraPermission === false && (
                         <Alert variant="destructive">
                           <AlertTitle>Camera Access Required</AlertTitle>
@@ -433,3 +456,5 @@ export default function NewLoanPage() {
     </div>
   );
 }
+
+    
