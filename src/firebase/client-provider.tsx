@@ -47,7 +47,7 @@ export function FirebaseClientProvider({
     // You can return a loading spinner here
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div>Loading...</div>
+        <div>Loading Firebase...</div>
       </div>
     );
   }
