@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -29,9 +30,9 @@ export default function DashboardPage() {
             <BookOpen className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12</div>
+            <div className="text-2xl font-bold">4</div>
             <p className="text-xs text-muted-foreground">
-              +2% from last month
+              +1 from last month
             </p>
           </CardContent>
         </Card>
