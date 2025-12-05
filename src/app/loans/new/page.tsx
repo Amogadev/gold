@@ -138,16 +138,26 @@ export default function NewLoanPage() {
     // Simulate an API call
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    console.log('Form Submitted Data:', {
+    const newLoan = {
+      id: new Date().toISOString(),
       ...data,
       loanStartDate: format(data.loanStartDate, 'yyyy-MM-dd'),
       loanDueDate: format(data.loanDueDate, 'yyyy-MM-dd'),
       imageUrl: capturedImage,
-    });
+      status: 'Active',
+      paidAmount: 0,
+      pendingBalance: data.loanAmount,
+    };
+
+    try {
+      sessionStorage.setItem('newLoan', JSON.stringify(newLoan));
+    } catch (error) {
+      console.error("Could not save to sessionStorage", error);
+    }
     
     setLoading(false);
     toast({
-      title: 'Success (Simulation)',
+      title: 'Success!',
       description: 'New loan has been created successfully.',
     });
     router.push('/loans');

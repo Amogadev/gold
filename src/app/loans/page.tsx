@@ -151,7 +151,23 @@ export default function ActiveLoansPage() {
   useEffect(() => {
     // Simulate fetching data
     setTimeout(() => {
-      setLoans(mockLoans);
+      let allLoans = [...mockLoans];
+      const newLoanJson = sessionStorage.getItem('newLoan');
+
+      if (newLoanJson) {
+        try {
+          const newLoan = JSON.parse(newLoanJson);
+          // Check if the loan is not already in the list to avoid duplicates on fast refresh
+          if (!allLoans.some(loan => loan.id === newLoan.id)) {
+            allLoans = [newLoan, ...allLoans];
+          }
+          sessionStorage.removeItem('newLoan'); // Clean up after adding
+        } catch (error) {
+          console.error("Could not parse new loan from sessionStorage", error);
+        }
+      }
+      
+      setLoans(allLoans);
       setLoading(false);
     }, 1000);
   }, []);
