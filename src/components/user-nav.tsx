@@ -1,7 +1,7 @@
 
 'use client';
 
-import { LogOut } from 'lucide-react';
+import { LogOut, User as UserIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -13,21 +13,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAuth, useUser } from '@/firebase';
+
+const mockUser = {
+  displayName: 'Demo User',
+  email: 'demo@example.com',
+  photoURL: '',
+};
+
 
 export function UserNav() {
-  const { user } = useUser();
-  const auth = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
-    if (auth) {
-      await auth.signOut();
-      router.push('/login');
-    }
+    // In a real app, you'd sign out here.
+    // For the demo, we'll just redirect.
+    console.log("User logged out (simulation).");
+    router.push('/');
   };
 
-  if (!user) return null;
+  const user = mockUser;
 
   return (
     <DropdownMenu>

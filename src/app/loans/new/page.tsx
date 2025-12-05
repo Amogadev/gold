@@ -6,9 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useFirestore } from '@/firebase';
-import { collection, addDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
-import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -48,7 +45,6 @@ const loanSchema = z.object({
 type LoanFormData = z.infer<typeof loanSchema>;
 
 export default function NewLoanPage() {
-  const db = useFirestore();
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | undefined>(undefined);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -128,22 +124,7 @@ export default function NewLoanPage() {
     };
   }, []);
 
-  const uploadImageToStorage = async (image: string, loanId: string) => {
-    const storage = getStorage();
-    const storageRef = ref(storage, `loan-images/${loanId}.jpg`);
-    const uploadResult = await uploadString(storageRef, image, 'data_url');
-    return getDownloadURL(uploadResult.ref);
-  };
-
   const onSubmit = async (data: LoanFormData) => {
-    if (!db) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Firestore is not initialized.',
-      });
-      return;
-    }
     if (!capturedImage) {
       toast({
         variant: 'destructive',
@@ -154,39 +135,22 @@ export default function NewLoanPage() {
     }
 
     setLoading(true);
-    try {
-      const loanData = {
-        ...data,
-        loanStartDate: format(data.loanStartDate, 'yyyy-MM-dd'),
-        loanDueDate: format(data.loanDueDate, 'yyyy-MM-dd'),
-        status: 'Active' as const,
-        paidAmount: 0,
-        pendingBalance: data.loanAmount,
-        createdAt: serverTimestamp(),
-        imageUrl: '',
-      };
-      
-      const docRef = await addDoc(collection(db, 'loans'), loanData);
-      
-      const imageUrl = await uploadImageToStorage(capturedImage, docRef.id);
+    // Simulate an API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
 
-      await updateDoc(docRef, { imageUrl });
-
-      toast({
-        title: 'Success',
-        description: 'New loan has been created successfully.',
-      });
-      router.push('/loans');
-    } catch (error) {
-      console.error('Error creating new loan: ', error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to create new loan. Please try again.',
-      });
-    } finally {
-      setLoading(false);
-    }
+    console.log('Form Submitted Data:', {
+      ...data,
+      loanStartDate: format(data.loanStartDate, 'yyyy-MM-dd'),
+      loanDueDate: format(data.loanDueDate, 'yyyy-MM-dd'),
+      imageUrl: capturedImage,
+    });
+    
+    setLoading(false);
+    toast({
+      title: 'Success (Simulation)',
+      description: 'New loan has been created successfully.',
+    });
+    router.push('/loans');
   };
 
   return (

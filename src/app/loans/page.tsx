@@ -1,9 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
-import { useCollection, useFirestore } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -37,6 +35,55 @@ export type Loan = {
   paidAmount: number;
   pendingBalance: number;
 };
+
+const mockLoans: Loan[] = [
+  {
+    id: '1',
+    customerName: 'Alice Johnson',
+    mobileNumber: '123-456-7890',
+    itemName: 'Gold Bangle',
+    itemWeight: 25.5,
+    loanAmount: 1500,
+    interestPercentage: 8.5,
+    loanStartDate: '2023-05-10',
+    loanDueDate: '2024-05-10',
+    imageUrl: 'https://picsum.photos/seed/loan1/600/400',
+    status: 'Active',
+    paidAmount: 500,
+    pendingBalance: 1000,
+  },
+  {
+    id: '2',
+    customerName: 'Bob Williams',
+    mobileNumber: '234-567-8901',
+    itemName: 'Diamond Ring',
+    itemWeight: 5.2,
+    loanAmount: 2200,
+    interestPercentage: 9.0,
+    loanStartDate: '2023-08-20',
+    loanDueDate: '2024-08-20',
+    imageUrl: 'https://picsum.photos/seed/loan2/600/400',
+    status: 'Active',
+    paidAmount: 1000,
+    pendingBalance: 1200,
+  },
+  {
+    id: '3',
+    customerName: 'Charlie Brown',
+    mobileNumber: '345-678-9012',
+    itemName: 'Gold Chain',
+    itemWeight: 50.0,
+    loanAmount: 3000,
+    interestPercentage: 8.0,
+    loanStartDate: '2022-11-01',
+    loanDueDate: '2023-11-01',
+    imageUrl: 'https://picsum.photos/seed/loan3/600/400',
+    status: 'Closed',
+    paidAmount: 3000,
+    pendingBalance: 0,
+  },
+];
+
 
 function LoanCard({ loan }: { loan: Loan }) {
   return (
@@ -85,14 +132,20 @@ function LoanCard({ loan }: { loan: Loan }) {
 }
 
 export default function ActiveLoansPage() {
-  const db = useFirestore();
-  const { data: loans, loading } = useCollection(
-    db ? collection(db, 'loans') : null
-  );
+  const [loans, setLoans] = useState<Loan[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
 
-  const filteredLoans = (loans as Loan[] | null)
+  useEffect(() => {
+    // Simulate fetching data
+    setTimeout(() => {
+      setLoans(mockLoans);
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  const filteredLoans = loans
     ?.filter((loan) => {
       if (!loan.customerName || !loan.mobileNumber) return false;
       const term = searchTerm.toLowerCase();
