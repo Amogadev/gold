@@ -356,15 +356,15 @@ export default function NewLoanPage() {
 
             <div className="space-y-2">
               <Label>Gold Item Image</Label>
-
-              <div className="w-full rounded-lg border bg-muted p-4" hidden={!isCameraOpen}>
+              <div className="w-full rounded-lg border bg-muted p-4" hidden={!capturedImage && !isCameraOpen}>
                   <video
                     ref={videoRef}
                     className="w-full aspect-video rounded-md"
                     autoPlay
                     muted
+                    hidden={!isCameraOpen}
                   />
-                  <div className="mt-4 flex justify-end gap-2">
+                  <div className="mt-4 flex justify-end gap-2" hidden={!isCameraOpen}>
                     <Button type="button" onClick={takePicture}>
                       <Camera className="mr-2 h-4 w-4" />
                       Take Picture

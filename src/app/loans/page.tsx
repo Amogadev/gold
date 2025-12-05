@@ -62,17 +62,17 @@ export const mockLoans: Loan[] = [
     id: '2',
     customerName: 'Bob Williams',
     mobileNumber: '234-567-8901',
-    itemName: 'Diamond Ring',
+    itemName: 'Gold Bangle',
     itemWeight: 5.2,
     loanAmount: 2200,
     interestPercentage: 9.0,
     loanStartDate: '2023-08-20',
     loanDueDate: '2024-08-20',
-    imageUrl: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=2070&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?q=80&w=1915&auto=format&fit=crop',
     status: 'Active',
     paidAmount: 1000,
     pendingBalance: 1200,
-    imageHint: 'diamond ring'
+    imageHint: 'gold bangle'
   },
   {
     id: '3',
