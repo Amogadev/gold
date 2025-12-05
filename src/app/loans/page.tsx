@@ -2,10 +2,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -19,6 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { FilePenLine } from 'lucide-react';
 
 export type Loan = {
   id: string;
@@ -127,6 +131,13 @@ function LoanCard({ loan }: { loan: Loan }) {
           </div>
         </div>
       </CardContent>
+      <CardFooter>
+        <Button asChild variant="outline" className="w-full">
+          <Link href={`/loans/${loan.id}/edit`}>
+            <FilePenLine className="mr-2 h-4 w-4" /> Edit
+          </Link>
+        </Button>
+      </CardFooter>
     </Card>
   );
 }
