@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useMemo } from 'react';
 import {
   Card,
   CardContent,
@@ -11,8 +12,46 @@ import { Button } from '@/components/ui/button';
 import { FilePlus, BookOpen, HandCoins, PiggyBank } from 'lucide-react';
 import Link from 'next/link';
 import { SiteHeader } from '@/components/site-header';
+import { useFirestore } from '@/firebase/provider';
+import { collection, query, where } from 'firebase/firestore';
+import { useCollection } from '@/firebase/firestore/use-collection';
+import type { Loan } from '@/app/loans/page';
 
 export default function DashboardPage() {
+  const db = useFirestore();
+
+  const activeLoansQuery = useMemo(() => {
+    if (!db) return null;
+    return query(collection(db, 'loans'), where('status', '==', 'Active'));
+  }, [db]);
+
+  const { data: activeLoans, loading } = useCollection(activeLoansQuery);
+
+  const dashboardStats = useMemo(() => {
+    if (!activeLoans) {
+      return {
+        totalActiveLoans: 0,
+        totalGoldPledged: 0,
+        totalLoanAmount: 0,
+      };
+    }
+    const loans = activeLoans as Loan[];
+    const totalGoldPledged = loans.reduce(
+      (acc, loan) => acc + (loan.itemWeight || 0),
+      0
+    );
+    const totalLoanAmount = loans.reduce(
+      (acc, loan) => acc + (loan.loanAmount || 0),
+      0
+    );
+
+    return {
+      totalActiveLoans: loans.length,
+      totalGoldPledged: totalGoldPledged,
+      totalLoanAmount: totalLoanAmount,
+    };
+  }, [activeLoans]);
+
   return (
     <>
       <SiteHeader />
@@ -33,9 +72,11 @@ export default function DashboardPage() {
               <BookOpen className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">4</div>
+              <div className="text-2xl font-bold">
+                {loading ? '...' : dashboardStats.totalActiveLoans}
+              </div>
               <p className="text-xs text-muted-foreground">
-                +1 from last month
+                Currently active loan agreements
               </p>
             </CardContent>
           </Card>
@@ -47,7 +88,9 @@ export default function DashboardPage() {
               <HandCoins className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">30.7g</div>
+              <div className="text-2xl font-bold">
+                {loading ? '...' : `${dashboardStats.totalGoldPledged.toFixed(2)}g`}
+              </div>
               <p className="text-xs text-muted-foreground">
                 from active loans
               </p>
@@ -61,7 +104,11 @@ export default function DashboardPage() {
               <PiggyBank className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">$3,700</div>
+              <div className="text-2xl font-bold">
+                {loading
+                  ? '...'
+                  : `$${dashboardStats.totalLoanAmount.toLocaleString()}`}
+              </div>
               <p className="text-xs text-muted-foreground">
                 from active loans
               </p>
