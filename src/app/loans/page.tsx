@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -40,7 +39,7 @@ export type Loan = {
   pendingBalance: number;
 };
 
-const mockLoans: Loan[] = [
+export const mockLoans: Loan[] = [
   {
     id: '1',
     customerName: 'Alice Johnson',
