@@ -106,10 +106,10 @@ export default function EditLoanPage() {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       streamRef.current = stream;
       setHasCameraPermission(true);
-      setIsCameraOpen(true);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
+      setIsCameraOpen(true);
     } catch (error) {
       console.error('Error accessing camera:', error);
       setHasCameraPermission(false);
@@ -377,7 +377,29 @@ export default function EditLoanPage() {
 
             <div className="space-y-2">
               <Label>Gold Item Image</Label>
-              {capturedImage ? (
+              <div className="w-full rounded-lg border bg-muted p-4" hidden={!isCameraOpen}>
+                <video
+                  ref={videoRef}
+                  className="w-full aspect-video rounded-md"
+                  autoPlay
+                  muted
+                />
+                <div className="mt-4 flex justify-end gap-2">
+                  <Button type="button" onClick={takePicture}>
+                    <Camera className="mr-2 h-4 w-4" />
+                    Take Picture
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={closeCamera}
+                  >
+                    Close
+                  </Button>
+                </div>
+              </div>
+
+              {capturedImage && (
                 <div className="relative">
                   <img
                     src={capturedImage}
@@ -388,34 +410,17 @@ export default function EditLoanPage() {
                     variant="outline"
                     size="sm"
                     className="absolute top-2 right-2"
-                    onClick={() => setCapturedImage(null)}
+                    onClick={() => {
+                      setCapturedImage(null);
+                      getCameraPermission();
+                    }}
                   >
                     Retake
                   </Button>
                 </div>
-              ) : isCameraOpen ? (
-                <div className="w-full rounded-lg border bg-muted p-4">
-                  <video
-                    ref={videoRef}
-                    className="w-full aspect-video rounded-md"
-                    autoPlay
-                    muted
-                  />
-                  <div className="mt-4 flex justify-end gap-2">
-                    <Button type="button" onClick={takePicture}>
-                      <Camera className="mr-2 h-4 w-4" />
-                      Take Picture
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={closeCamera}
-                    >
-                      Close
-                    </Button>
-                  </div>
-                </div>
-              ) : (
+              )}
+              
+              {!capturedImage && !isCameraOpen && (
                 <div className="flex flex-col items-start gap-4">
                   <Button type="button" variant="outline" onClick={getCameraPermission}>
                     <Camera className="mr-2 h-4 w-4" /> Open Camera
@@ -441,3 +446,5 @@ export default function EditLoanPage() {
     </div>
   );
 }
+
+    

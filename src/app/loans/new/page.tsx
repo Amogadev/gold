@@ -79,10 +79,10 @@ export default function NewLoanPage() {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       streamRef.current = stream;
       setHasCameraPermission(true);
-      setIsCameraOpen(true);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
+      setIsCameraOpen(true);
     } catch (error) {
       console.error('Error accessing camera:', error);
       setHasCameraPermission(false);
@@ -365,24 +365,8 @@ export default function NewLoanPage() {
 
             <div className="space-y-2">
               <Label>Gold Item Image</Label>
-              {capturedImage ? (
-                <div className="relative">
-                  <img
-                    src={capturedImage}
-                    alt="Captured gold item"
-                    className="w-full rounded-md border"
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="absolute top-2 right-2"
-                    onClick={() => setCapturedImage(null)}
-                  >
-                    Retake
-                  </Button>
-                </div>
-              ) : isCameraOpen ? (
-                <div className="w-full rounded-lg border bg-muted p-4">
+
+              <div className="w-full rounded-lg border bg-muted p-4" hidden={!isCameraOpen}>
                   <video
                     ref={videoRef}
                     className="w-full aspect-video rounded-md"
@@ -402,8 +386,30 @@ export default function NewLoanPage() {
                       Close
                     </Button>
                   </div>
+              </div>
+
+              {capturedImage && (
+                <div className="relative">
+                  <img
+                    src={capturedImage}
+                    alt="Captured gold item"
+                    className="w-full rounded-md border"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="absolute top-2 right-2"
+                    onClick={() => {
+                        setCapturedImage(null);
+                        getCameraPermission();
+                    }}
+                  >
+                    Retake
+                  </Button>
                 </div>
-              ) : (
+              )}
+              
+              {!capturedImage && !isCameraOpen && (
                 <div className="flex flex-col items-start gap-4">
                   <Button type="button" variant="outline" onClick={getCameraPermission}>
                     <Camera className="mr-2 h-4 w-4" /> Open Camera
