@@ -23,7 +23,6 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { FilePenLine } from 'lucide-react';
-import { SiteHeader } from '@/components/site-header';
 
 export type Loan = {
   id: string;
@@ -186,57 +185,52 @@ export default function ActiveLoansPage() {
     });
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-background">
-      <SiteHeader />
-      <main className="flex-1">
-        <div className="container mx-auto px-4 py-8">
-          <header className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight">Active Loans</h1>
-            <p className="mt-1 text-muted-foreground">
-              Browse and manage all current loan records.
-            </p>
-          </header>
+    <div className="container mx-auto px-4 py-8">
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight">Active Loans</h1>
+        <p className="mt-1 text-muted-foreground">
+          Browse and manage all current loan records.
+        </p>
+      </header>
 
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <Input
-              placeholder="Search by name or mobile..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="max-w-sm"
-            />
-            <Select
-              value={filterStatus}
-              onValueChange={setFilterStatus}
-            >
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="closed">Closed</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <Input
+          placeholder="Search by name or mobile..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="max-w-sm"
+        />
+        <Select
+          value={filterStatus}
+          onValueChange={setFilterStatus}
+        >
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="Filter by status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="closed">Closed</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-          {loading ? (
-            <p>Loading loans...</p>
-          ) : filteredLoans && filteredLoans.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredLoans.map((loan) => (
-                <LoanCard key={loan.id} loan={loan} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16 border-2 border-dashed rounded-lg">
-              <h3 className="text-xl font-medium">No loans found</h3>
-              <p className="text-muted-foreground mt-2">
-                There are no loans matching your criteria.
-              </p>
-            </div>
-          )}
+      {loading ? (
+        <p>Loading loans...</p>
+      ) : filteredLoans && filteredLoans.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredLoans.map((loan) => (
+            <LoanCard key={loan.id} loan={loan} />
+          ))}
         </div>
-      </main>
+      ) : (
+        <div className="text-center py-16 border-2 border-dashed rounded-lg">
+          <h3 className="text-xl font-medium">No loans found</h3>
+          <p className="text-muted-foreground mt-2">
+            There are no loans matching your criteria.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
