@@ -3,26 +3,26 @@
 
 import { useEffect, useState } from 'react';
 import type { User } from 'firebase/auth';
-import { useAuth } from '@/firebase';
+
+// Mock user for demo purposes since Firebase is removed.
+const mockUser = {
+  uid: 'mock-user-id',
+  email: 'demo@example.com',
+  displayName: 'Demo User',
+  photoURL: '',
+};
 
 export function useUser() {
-  const auth = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!auth) {
+    // Simulate fetching a user
+    setTimeout(() => {
+      setUser(mockUser as User);
       setLoading(false);
-      return;
-    };
-    
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user);
-      setLoading(false);
-    });
-
-    return () => unsubscribe?.();
-  }, [auth]);
+    }, 500);
+  }, []);
 
   return { user, loading };
 }
