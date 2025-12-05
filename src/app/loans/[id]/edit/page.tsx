@@ -152,15 +152,6 @@ export default function EditLoanPage() {
   }, []);
 
   const onSubmit = async (data: LoanFormData) => {
-    if (!capturedImage) {
-      toast({
-        variant: 'destructive',
-        title: 'Image Required',
-        description: 'Please capture an image of the gold item.',
-      });
-      return;
-    }
-
     setLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1500));
 
@@ -446,5 +437,3 @@ export default function EditLoanPage() {
     </div>
   );
 }
-
-    

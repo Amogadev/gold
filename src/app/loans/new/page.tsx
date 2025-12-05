@@ -126,15 +126,6 @@ export default function NewLoanPage() {
   }, []);
 
   const onSubmit = async (data: LoanFormData) => {
-    if (!capturedImage) {
-      toast({
-        variant: 'destructive',
-        title: 'Image Required',
-        description: 'Please capture an image of the gold item.',
-      });
-      return;
-    }
-
     setLoading(true);
     // Simulate an API call
     await new Promise(resolve => setTimeout(resolve, 1500));
@@ -149,7 +140,7 @@ export default function NewLoanPage() {
       interestPercentage: data.interestPercentage,
       loanStartDate: format(data.loanStartDate, 'yyyy-MM-dd'),
       loanDueDate: format(data.loanDueDate, 'yyyy-MM-dd'),
-      imageUrl: capturedImage,
+      imageUrl: capturedImage || 'https://picsum.photos/seed/placeholder/600/400',
       status: 'Active',
       paidAmount: 0,
       pendingBalance: data.loanAmount,
@@ -435,5 +426,3 @@ export default function NewLoanPage() {
     </div>
   );
 }
-
-    
