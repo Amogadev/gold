@@ -148,24 +148,25 @@ function LoanCard({ loan }: { loan: Loan }) {
 }
 
 export default function ActiveLoansPage() {
-  const [loans, setLoans] = useState<Loan[]>([]);
+  const [loans, setLoans] = useState<Loan[]>(mockLoans);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
 
   useEffect(() => {
-    let currentLoans = [...mockLoans];
+    // This effect runs only once on the client when the component mounts.
     try {
       const newLoanJson = sessionStorage.getItem('newLoan');
       if (newLoanJson) {
-        const newLoan = JSON.parse(newLoanJson);
-        currentLoans = [newLoan, ...currentLoans];
+        const newLoan = JSON.parse(newLoanJson) as Loan;
+        // Prepend the new loan to the existing list of loans
+        setLoans(prevLoans => [newLoan, ...prevLoans]);
+        // Clear the item from sessionStorage to prevent re-adding on refresh
         sessionStorage.removeItem('newLoan');
       }
     } catch (error) {
       console.error("Could not parse new loan from sessionStorage", error);
     }
-    setLoans(currentLoans);
     setLoading(false);
   }, []);
 
