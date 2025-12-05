@@ -58,9 +58,9 @@ export default function DashboardPage() {
             <PiggyBank className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$250,000</div>
+            <div className="text-2xl font-bold">$3,700</div>
             <p className="text-xs text-muted-foreground">
-              +$15,000 from last month
+              from active loans
             </p>
           </CardContent>
         </Card>
