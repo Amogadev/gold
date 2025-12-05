@@ -28,7 +28,7 @@ export const FirebaseProvider = ({
   if (!firebaseApp || !auth || !db) {
     return (
        <div className="flex min-h-screen items-center justify-center">
-        <div>Loading Firebase...</div>
+        <div>Loading...</div>
       </div>
     )
   }
