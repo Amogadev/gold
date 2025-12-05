@@ -44,9 +44,9 @@ export default function DashboardPage() {
             <HandCoins className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1,250g</div>
+            <div className="text-2xl font-bold">30.7g</div>
             <p className="text-xs text-muted-foreground">
-              +50g from last month
+              from active loans
             </p>
           </CardContent>
         </Card>
