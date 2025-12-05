@@ -31,6 +31,7 @@ import { useToast } from '@/hooks/use-toast';
 import type { Loan } from '@/app/loans/page';
 import { mockLoans } from '@/app/loans/page';
 import { SiteHeader } from '@/components/site-header';
+import { PageHeader } from '@/components/page-header';
 
 const loanSchema = z.object({
   customerName: z.string().min(1, 'Customer name is required'),
@@ -186,10 +187,10 @@ export default function EditLoanPage({ params }: { params: { id: string } }) {
         <div className="container mx-auto px-4 py-8">
           <Card className="max-w-2xl mx-auto">
             <CardHeader>
-              <CardTitle>Edit Loan</CardTitle>
-              <CardDescription>
-                Update the details for the loan to {loan.customerName}.
-              </CardDescription>
+               <PageHeader 
+                title="Edit Loan" 
+                description={`Update the details for the loan to ${loan.customerName}.`}
+              />
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

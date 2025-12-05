@@ -30,6 +30,7 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import type { Loan } from '@/app/loans/page';
 import { SiteHeader } from '@/components/site-header';
+import { PageHeader } from '@/components/page-header';
 
 const loanSchema = z.object({
   customerName: z.string().min(1, 'Customer name is required'),
@@ -169,10 +170,10 @@ export default function NewLoanPage() {
         <div className="container mx-auto px-4 py-8">
           <Card className="max-w-2xl mx-auto">
             <CardHeader>
-              <CardTitle>Create New Loan</CardTitle>
-              <CardDescription>
-                Fill in the details below to create a new gold loan record.
-              </CardDescription>
+              <PageHeader 
+                title="Create New Loan" 
+                description="Fill in the details below to create a new gold loan record."
+              />
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
