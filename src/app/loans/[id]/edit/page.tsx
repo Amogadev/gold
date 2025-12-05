@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -46,7 +46,7 @@ const loanSchema = z.object({
 
 type LoanFormData = z.infer<typeof loanSchema>;
 
-export default function EditLoanPage() {
+export default function EditLoanPage({ params }: { params: { id: string } }) {
   const [loan, setLoan] = useState<Loan | null>(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | undefined>(undefined);
@@ -56,7 +56,6 @@ export default function EditLoanPage() {
   const streamRef = useRef<MediaStream | null>(null);
 
   const router = useRouter();
-  const params = useParams();
   const { toast } = useToast();
   
   const {
