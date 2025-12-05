@@ -355,7 +355,7 @@ export default function NewLoanPage() {
             </div>
 
             <div className="space-y-2">
-              <Label>Gold Item Image</Label>
+              <Label>Gold Item Image (Optional)</Label>
               <div className="w-full rounded-lg border bg-muted p-4" hidden={!capturedImage && !isCameraOpen}>
                   <video
                     ref={videoRef}
@@ -426,5 +426,3 @@ export default function NewLoanPage() {
     </div>
   );
 }
-
-    
