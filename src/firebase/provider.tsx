@@ -7,16 +7,12 @@ import type { Auth } from 'firebase/auth';
 import type { Firestore } from 'firebase/firestore';
 
 interface FirebaseContextValue {
-  firebaseApp: FirebaseApp | null;
-  auth: Auth | null;
-  db: Firestore | null;
+  firebaseApp: FirebaseApp;
+  auth: Auth;
+  db: Firestore;
 }
 
-const FirebaseContext = createContext<FirebaseContextValue>({
-  firebaseApp: null,
-  auth: null,
-  db: null,
-});
+const FirebaseContext = createContext<FirebaseContextValue | null>(null);
 
 export const FirebaseProvider = ({
   children,
@@ -29,6 +25,14 @@ export const FirebaseProvider = ({
   auth: Auth;
   db: Firestore;
 }) => {
+  if (!firebaseApp || !auth || !db) {
+    return (
+       <div className="flex min-h-screen items-center justify-center">
+        <div>Loading Firebase...</div>
+      </div>
+    )
+  }
+
   return (
     <FirebaseContext.Provider value={{ firebaseApp, auth, db }}>
       {children}
