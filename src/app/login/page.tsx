@@ -18,19 +18,18 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Gem, LogIn } from 'lucide-react';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('demo@example.com');
+  const [password, setPassword] = useState('password');
   const [error, setError] = useState('');
   const router = useRouter();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // This is a mock login. In a real app, you'd have actual validation.
-    if (email && password) {
+    if (email === 'demo@example.com' && password === 'password') {
       console.log('Mock login successful');
       router.push('/dashboard');
     } else {
-      setError('Please enter both email and password.');
+      setError('Invalid email or password.');
     }
   };
 
