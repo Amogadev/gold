@@ -27,7 +27,7 @@ export function UserNav() {
   const handleLogout = async () => {
     // In a real app, you'd sign out here.
     // For the demo, we'll just redirect to the login page.
-    console.log("User logged out (simulation).");
+    console.log("User logged out.");
     router.push('/login');
   };
 
