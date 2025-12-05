@@ -149,8 +149,8 @@ export default function ActiveLoansPage() {
   const [filterStatus, setFilterStatus] = useState('all');
 
   useEffect(() => {
-    // Simulate fetching data
-    setTimeout(() => {
+    // This function will only be called on the client side
+    const initializeLoans = () => {
       let allLoans = [...mockLoans];
       
       // Check for a new loan in sessionStorage
@@ -169,7 +169,9 @@ export default function ActiveLoansPage() {
       
       setLoans(allLoans);
       setLoading(false);
-    }, 1000);
+    };
+
+    initializeLoans();
   }, []);
 
   const filteredLoans = loans
@@ -237,4 +239,5 @@ export default function ActiveLoansPage() {
   );
 }
 
+    
     
